@@ -26,7 +26,7 @@ def get_lookup_items_for_resource(
         if lookup_item["resource_id"] == resource_id:
             resource_lookup_items.append(lookup_item)
 
-    return lookup_items
+    return resource_lookup_items
 
 
 def get_lookup_item_for_distribution_option(
