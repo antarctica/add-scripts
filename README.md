@@ -114,6 +114,32 @@ For information, for each record in the release this script will:
 4. set the metadata updated date to the current date (times are not recorded as per the ISO specification)
 5. save the metadata record back to OneDrive
 
+### Checking all records have unique transfer option URLs
+
+This script checks that all records in a release have unique download URLs, to detect errors in other tasks.
+
+Before running this script you will need to:
+
+1. check the `metadata_records_path` variable points to the right release
+
+This script is only a check, if it finds problems they will be listed (but not fixed). If no problems are found, no 
+output will be shown.
+
+To run this script:
+
+```
+$ poetry run python src/add_scripts/check_transfer_option_urls_unique
+```
+
+For information, for each record in the release this script will:
+
+1. load all the metadata records from OneDrive
+2. for each record, and each transfer option check the transfer option URL against every other record's transfer 
+   option URLs
+3. discount situations where the source record ID and the comparison record ID are the same (as these will always be 
+   the same)
+4. log to the screen any URLs that do match, reporting the source and comparison record ID and media-type
+
 ## Implementation
 
 Each task is currently structured as it's own Python module, within the `add_scripts` Python package.
