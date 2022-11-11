@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "add-scripts"
+version = "0.1.0"
+description = "Scripts for use in SCAR ADD releases"
+authors = ["Felix Fennell <felnne@bas.ac.uk>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+requests-auth-aws-sigv4 = "^0.7"
+bas-metadata-library = "^0.9.1"
+
+[tool.poetry.dev-dependencies]
+black = "^22.10.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
