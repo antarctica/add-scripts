@@ -25,15 +25,17 @@ table2 = """| Dataset Title            | File Type                  | Direct Lin
 | Medium resolution vector polylines | Geopackage | https://ramadda.data.bas.ac.uk/repository/entry/get/add_coastline_medium_res_line_v7_6.gpkg?entryid=synth%3A1db7f188-6c3e-46cf-a3bf-e39dbd77e14c%3AL2FkZF9jb2FzdGxpbmVfbWVkaXVtX3Jlc19saW5lX3Y3XzYuZ3BrZw%3D%3D |
 | High resolution vector polygons | Shapefile  | https://ramadda.data.bas.ac.uk/repository/entry/get/add_coastline_high_res_polygon_v7_6.shp.zip?entryid=synth%3Ae6cf8946-e493-4c36-b4f5-58f7a2ee2a74%3AL2FkZF9jb2FzdGxpbmVfaGlnaF9yZXNfcG9seWdvbl92N182LnNocC56aXA%3D |
 | High resolution vector polygons | Geopackage | https://ramadda.data.bas.ac.uk/repository/entry/get/add_coastline_high_res_polygon_v7_6.gpkg?entryid=synth%3Ae6cf8946-e493-4c36-b4f5-58f7a2ee2a74%3AL2FkZF9jb2FzdGxpbmVfaGlnaF9yZXNfcG9seWdvbl92N182Lmdwa2c%3D |
-| Medium resolution vector polylines | Shapefile  | https://ramadda.data.bas.ac.uk/repository/entry/get/add_coastline_medium_res_polygon_v7_6.shp.zip?entryid=synth%3Ab5eaca58-2fce-4a68-bea5-fbafd7c90fa2%3AL2FkZF9jb2FzdGxpbmVfbWVkaXVtX3Jlc19wb2x5Z29uX3Y3XzYuc2hwLnppcA%3D%3D
-| Medium resolution vector polylines | Geopackage | https://ramadda.data.bas.ac.uk/repository/entry/get/add_coastline_medium_res_polygon_v7_6.gpkg?entryid=synth%3Ab5eaca58-2fce-4a68-bea5-fbafd7c90fa2%3AL2FkZF9jb2FzdGxpbmVfbWVkaXVtX3Jlc19wb2x5Z29uX3Y3XzYuZ3BrZw%3D%3D |
+| Medium resolution vector polygons | Shapefile  | https://ramadda.data.bas.ac.uk/repository/entry/get/add_coastline_medium_res_polygon_v7_6.shp.zip?entryid=synth%3Ab5eaca58-2fce-4a68-bea5-fbafd7c90fa2%3AL2FkZF9jb2FzdGxpbmVfbWVkaXVtX3Jlc19wb2x5Z29uX3Y3XzYuc2hwLnppcA%3D%3D
+| Medium resolution vector polygons | Geopackage | https://ramadda.data.bas.ac.uk/repository/entry/get/add_coastline_medium_res_polygon_v7_6.gpkg?entryid=synth%3Ab5eaca58-2fce-4a68-bea5-fbafd7c90fa2%3AL2FkZF9jb2FzdGxpbmVfbWVkaXVtX3Jlc19wb2x5Z29uX3Y3XzYuZ3BrZw%3D%3D |
 | High resolution seamask | Shapefile  | https://ramadda.data.bas.ac.uk/repository/entry/get/add_seamask_high_res_v7_6.shp.zip?entryid=synth%3A96cf916d-7aa7-464c-985e-a39692d5be83%3AL2FkZF9zZWFtYXNrX2hpZ2hfcmVzX3Y3XzYuc2hwLnppcA%3D%3D |
 | High resolution seamask | Geopackage | https://ramadda.data.bas.ac.uk/repository/entry/get/add_seamask_high_res_v7_6.gpkg?entryid=synth%3A96cf916d-7aa7-464c-985e-a39692d5be83%3AL2FkZF9zZWFtYXNrX2hpZ2hfcmVzX3Y3XzYuZ3BrZw%3D%3D |
 | Medium resolution seamask | Shapefile  | https://ramadda.data.bas.ac.uk/repository/entry/get/add_seamask_medium_res_v7_6.shp.zip?entryid=synth%3A217b8fde-5664-4ff5-8f30-0cf8c1f14be7%3AL2FkZF9zZWFtYXNrX21lZGl1bV9yZXNfdjdfNi5zaHAuemlw |
 | Medium resolution seamask | Geopackage | https://ramadda.data.bas.ac.uk/repository/entry/get/add_seamask_medium_res_v7_6.gpkg?entryid=synth%3A217b8fde-5664-4ff5-8f30-0cf8c1f14be7%3AL2FkZF9zZWFtYXNrX21lZGl1bV9yZXNfdjdfNi5ncGtn |"""
 
-# lambda_endpoint = 'https://zrpqdlufnfqcmqmzppwzegosvu0rvbca.lambda-url.eu-west-1.on.aws/'  # staging
-lambda_endpoint = "https://dvej4gdfa333uci4chyhkxj3wq0fkxrs.lambda-url.eu-west-1.on.aws/"  # production
+lambda_endpoint = (
+    "https://zrpqdlufnfqcmqmzppwzegosvu0rvbca.lambda-url.eu-west-1.on.aws/"  # staging
+)
+# lambda_endpoint = "https://dvej4gdfa333uci4chyhkxj3wq0fkxrs.lambda-url.eu-west-1.on.aws/"  # production
 
 lookup_items_path = Path("lookup_items.json")
 
