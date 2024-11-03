@@ -1,31 +1,34 @@
 # SCAR Antarctic Digital Database (ADD) Release Scripts
 
-Initial scripts to assist with SCAR Antarctic Digital Database (ADD) releases
+Scripts to assist with SCAR Antarctic Digital Database (ADD) releases.
 
 ## Purpose
 
-These scripts are designed to help speed up and simplify ADD releases by automating boring tasks.
+To help speed up and simplify ADD releases by automating boring tasks.
+
+Part of a wider aim to streamline and automate the ADD release workflow 
+([#172](https://gitlab.data.bas.ac.uk/MAGIC/add/-/issues/172)) and more generally as a demonstration of the 
+[PDC-MAGIC Data Workflows](https://gist.github.com/felnne/57b64396426bfe2ca641a91d7cf9e597) project.
 
 ## Status
 
-These scripts are an initial effort, covering some of these boring, automatable tasks. There are other tasks that can
-and should be automated as well, with an eventual aim to make much of the ADD release process (and other related 
-data distribution workflows) as automated as possible.
+**Note:** These scripts are in a raw/scrappy form, without tests, a CLI or proper structure. If and as these tasks 
+settle, efforts to formalise these tasks into a proper tool may be possible.
 
-This wider aim for the ADD is tracked in https://gitlab.data.bas.ac.uk/MAGIC/add/-/issues/172. The wider aim for 
-generically improving data distribution and publication workflows is tracked loosely as part of the PDC-MAGIC Data 
-Workflows project, currently documented in https://gist.github.com/felnne/57b64396426bfe2ca641a91d7cf9e597.
-
-**Note:** These scripts are in a raw form, without tests, a CLI or proper class structure. As more time is available,
-and the requirements for these tasks settle, efforts to formalise, and integrate these tasks into other tools should be
-possible.
+Features, bugs, etc. for these scripts are managed in the main [ADD project](https://gitlab.data.bas.ac.uk/MAGIC/add).
 
 ## Usage
 
-**Note:** These scripts currently contain hard-coded file paths, specific to Felix's laptop to a specific release. 
-In time this will become configurable but until then, you will need to review and adjust each script before running.
+**Note:** These scripts currently contain hard-coded file paths, specific to @felnne's laptop. In time this may become 
+configurable but until then, you will need to review and adjust each script before running.
 
 **Note:** You will need access to the MAGIC Team OneDrive/Sharepoint site to access files used by these scripts.
+Scripts should be run in this order:
+
+1. [register download proxy items](#registering-download-proxy-items)
+1. [updating metadata records with download proxy URLs](#updating-metadata-records-with-download-proxy-urls)
+1. [checking transfer options are unique](#checking-all-records-have-unique-transfer-option-urls)
+1. [setting publication and release dates](#updating-release-and-publication-dates-in-metadata-records)
 
 ### Registering download proxy items
 
@@ -142,7 +145,9 @@ For information, for each record in the release this script will:
 
 ## Implementation
 
-Each task is currently structured as it's own Python module, within the `add_scripts` Python package.
+Each task is currently structured as its own module, within the [`add_scripts`](src/add_scripts) package.
+
+Some common code is shared via the [`utils`](src/add_scripts/utils.py) module.
 
 ## Setup
 
@@ -156,8 +161,6 @@ $ poetry install
 
 ## Development
 
-...
-
 ### Code formatting
 
 All source code should be ran through the Black code formatter:
@@ -165,26 +168,6 @@ All source code should be ran through the Black code formatter:
 ```
 $ poetry run black src/
 ```
-
-## Deployment
-
-...
-
-## Release procedures
-
-...
-
-## Feedback
-
-The maintainer of this project is the BAS Mapping and Geographic Information Centre (MAGIC). We welcome feedback by
-email addressed to [magic@bas.ac.uk](mailto:magic@bas.ac.uk).
-
-## Issues
-
-This project uses issue tracking, see the 
-[Issue tracker](https://gitlab.data.bas.ac.uk/MAGIC/add-release-scripts/-/issues) for more information.
-
-**Note:** Read & write access to this issue tracker is restricted. Contact the project maintainer to request access.
 
 ## Licence
 
