@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+* Initial clone records script
+
 ### Changed
 
 * Switched from Black to Ruff for code formatting
