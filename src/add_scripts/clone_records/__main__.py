@@ -1,27 +1,8 @@
 import json
-from enum import Enum
 from copy import deepcopy
 from pathlib import Path
 
-
-class AddDatasetCodes(Enum):
-    C01 = "High resolution vector polylines of the Antarctic coastline"
-    C02 = "Medium resolution vector polylines of the Antarctic coastline"
-    C03 = "High resolution vector polygons of the Antarctic coastline"
-    C04 = "Medium resolution vector polygons of the Antarctic coastline"
-    C05 = "High resolution vector contours for Antarctica"
-    C06 = "Medium resolution vector contours for Antarctica"
-    C07 = "Automatically extracted rock outcrop dataset for Antarctica"
-    C08 = "High resolution vector polygons of Antarctic rock outcrop"
-    C09 = "Medium resolution vector polygons of Antarctic rock outcrop"
-    C10 = "High resolution Antarctic moraine dataset"
-    C11 = "Medium resolution Antarctic moraine dataset"
-    C12 = "High resolution Antarctic lakes dataset"
-    C13 = "Medium resolution Antarctic lakes dataset"
-    C14 = "Antarctic streams dataset"
-    C15 = "High resolution vector polygon seamask for areas south of 60\u00b0S"
-    C16 = "Medium resolution vector polygon seamask for areas south of 60\u00b0S"
-    C17 = "Antarctic Digital Database data limit at 60\u00b0S"
+from add_scripts.data import AddDatasetCode
 
 
 ADD_CURRENT_COLLECTION = "e74543c0-4c4e-4b41-aa33-5bb2f67df389"
@@ -31,23 +12,23 @@ UPDATE_PLACEHOLDER = "!!PLACEHOLDER!!"
 
 # comment out items that are not part of the next release
 DATASETS_TO_CLONE = [
-    AddDatasetCodes.C01,  # coast_line_h
-    AddDatasetCodes.C02,  # coast_line_m
-    AddDatasetCodes.C03,  # coast_poly_h
-    AddDatasetCodes.C04,  # coast_poly_m
-    # AddDatasetCodes.C05,  # contours_h
-    # AddDatasetCodes.C06,  # contours_m
-    # AddDatasetCodes.C07,  # rock_auto
-    AddDatasetCodes.C08,  # rock_poly_h
-    AddDatasetCodes.C09,  # rock_poly_m
-    AddDatasetCodes.C10,  # moraine_h
-    AddDatasetCodes.C11,  # moraine_m
-    AddDatasetCodes.C12,  # lakes_h
-    AddDatasetCodes.C13,  # lakes_m
-    # AddDatasetCodes.C14,  # streams
-    AddDatasetCodes.C15,  # seamask_poly_h
-    AddDatasetCodes.C16,  # seamask_poly_m
-    # AddDatasetCodes.C17,  # data_limit
+    AddDatasetCode.C01,  # coast_line_h
+    AddDatasetCode.C02,  # coast_line_m
+    AddDatasetCode.C03,  # coast_poly_h
+    AddDatasetCode.C04,  # coast_poly_m
+    AddDatasetCode.C05,  # contours_h
+    AddDatasetCode.C06,  # contours_m
+    AddDatasetCode.C07,  # rock_auto
+    AddDatasetCode.C08,  # rock_poly_h
+    AddDatasetCode.C09,  # rock_poly_m
+    AddDatasetCode.C10,  # moraine_h
+    AddDatasetCode.C11,  # moraine_m
+    AddDatasetCode.C12,  # lakes_h
+    AddDatasetCode.C13,  # lakes_m
+    AddDatasetCode.C14,  # streams
+    AddDatasetCode.C15,  # seamask_poly_h
+    AddDatasetCode.C16,  # seamask_poly_m
+    AddDatasetCode.C17,  # data_limit
 ]
 
 # change to next release version
@@ -88,7 +69,7 @@ def index_add_records() -> dict[str, dict]:
         record_data = get_record_data(record_id)
         record_title = record_data["identification"]["title"]["value"]
         records_by_title[record_title] = record_id
-        record_code = AddDatasetCodes(record_title)
+        record_code = AddDatasetCode(record_title)
         current_records[record_code.name] = record_data
 
     return current_records
