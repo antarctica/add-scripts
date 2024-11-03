@@ -32,16 +32,19 @@ table2 = """| Dataset Title            | File Type                  | Direct Lin
 | Medium resolution seamask | Shapefile  | https://ramadda.data.bas.ac.uk/repository/entry/get/add_seamask_medium_res_v7_6.shp.zip?entryid=synth%3A217b8fde-5664-4ff5-8f30-0cf8c1f14be7%3AL2FkZF9zZWFtYXNrX21lZGl1bV9yZXNfdjdfNi5zaHAuemlw |
 | Medium resolution seamask | Geopackage | https://ramadda.data.bas.ac.uk/repository/entry/get/add_seamask_medium_res_v7_6.gpkg?entryid=synth%3A217b8fde-5664-4ff5-8f30-0cf8c1f14be7%3AL2FkZF9zZWFtYXNrX21lZGl1bV9yZXNfdjdfNi5ncGtn |"""
 
-lambda_endpoint = (
-    "https://zrpqdlufnfqcmqmzppwzegosvu0rvbca.lambda-url.eu-west-1.on.aws/"  # staging
-)
+lambda_endpoint = "https://zrpqdlufnfqcmqmzppwzegosvu0rvbca.lambda-url.eu-west-1.on.aws/"  # staging
 # lambda_endpoint = "https://dvej4gdfa333uci4chyhkxj3wq0fkxrs.lambda-url.eu-west-1.on.aws/"  # production
 
 lookup_items_path = Path("lookup_items.json")
 
 
-def markdown_table_to_list(table: str, keys: List[str]) -> List[Dict[str, str]]:
+def markdown_table_to_list(table: str) -> List[Dict[str, str]]:
     items: List[Dict[str, str]] = []
+
+    headers = []
+    for header in table.splitlines()[0].split("|"):
+        if header.strip() != "":
+            headers.append(header.strip())
 
     rows = table.splitlines()[2:]  # strip first two header rows
     for row in rows:
@@ -53,11 +56,71 @@ def markdown_table_to_list(table: str, keys: List[str]) -> List[Dict[str, str]]:
             values.append(cell)
 
         item: Dict[str, str] = {}
-        for _ in zip(keys, values):
+        for _ in zip(headers, values):
             item[_[0]] = _[1]
         items.append(item)
 
     return items
+
+
+def normalise_resources_table(resources: List[Dict[str, str]]) -> List[Dict[str, str]]:
+    normalised_resources = []
+
+    for resource in resources:
+        normalised_resources.append(
+            {
+                "title": resource["Dataset Title"],
+                "resource_id": resource["Resource ID"].replace("`", "").strip(),
+            }
+        )
+
+    return normalised_resources
+
+
+def normalise_artefacts_table(artefacts: List[Dict[str, str]]) -> List[Dict[str, str]]:
+    normalised_artefacts = []
+
+    # table type A
+    if list(artefacts[0].keys()) == ["Dataset Title", "File Type", "Direct Link"]:
+        for artefact in artefacts:
+            media_type = None
+
+            if artefact["File Type"].lower() == "geopackage":
+                media_type = "application/geopackage+sqlite3"
+            elif artefact["File Type"].lower() == "shapefile":
+                media_type = "application/vnd.shp"
+
+            normalised_artefacts.append(
+                {
+                    "title": artefact["Dataset Title"],
+                    "media_type": media_type,
+                    "origin_uri": artefact["Direct Link"],
+                }
+            )
+
+        return normalised_artefacts
+
+    # table type B
+    if list(artefacts[0].keys()) == ["Dataset Title", "Shapefile URL", "GPKG URL"]:
+        for artefact in artefacts:
+            normalised_artefacts.append(
+                {
+                    "title": artefact["Dataset Title"],
+                    "media_type": "application/vnd.shp",
+                    "origin_uri": artefact["Shapefile URL"],
+                }
+            )
+            normalised_artefacts.append(
+                {
+                    "title": artefact["Dataset Title"],
+                    "media_type": "application/geopackage+sqlite3",
+                    "origin_uri": artefact["GPKG URL"],
+                }
+            )
+
+        return normalised_artefacts
+
+    return normalised_artefacts
 
 
 def join_resources_to_artefacts(
@@ -77,21 +140,6 @@ def join_resources_to_artefacts(
         artefact_resources.append(artefact_resource)
 
     return artefact_resources
-
-
-def convert_artefact_file_types_to_media_types(artefacts: List[Dict[str, str]]):
-    _artefacts: List[Dict[str, str]] = []
-
-    for artefact in artefacts:
-        _artefact = copy(artefact)
-        if artefact["file_type_title"].lower() == "geopackage":
-            _artefact["media_type"] = "application/geopackage+sqlite3"
-        elif artefact["file_type_title"].lower() == "shapefile":
-            _artefact["media_type"] = "application/vnd.shp"
-
-        _artefacts.append(_artefact)
-
-    return _artefacts
 
 
 def make_lookup_items(artefacts: List[Dict[str, str]]) -> List[Dict[str, str]]:
@@ -119,17 +167,16 @@ def register_lookup_items(lookup_items: List[Dict[str, str]]):
 
 
 def main():
-    resources = markdown_table_to_list(table1, keys=["title", "resource_id"])
-    artefacts = markdown_table_to_list(
-        table2, keys=["title", "file_type_title", "origin_uri"]
-    )
+    resources = markdown_table_to_list(table1)
+    resources = normalise_resources_table(resources=resources)
+
+    artefacts = markdown_table_to_list(table2a)
+    artefacts = normalise_artefacts_table(artefacts=artefacts)
+
     artefacts_linked = join_resources_to_artefacts(
         resources=resources, artefacts=artefacts
     )
-    artefacts_linked_media_types = convert_artefact_file_types_to_media_types(
-        artefacts=artefacts_linked
-    )
-    lookup_items = make_lookup_items(artefacts=artefacts_linked_media_types)
+    lookup_items = make_lookup_items(artefacts=artefacts_linked)
 
     print("Generated lookup items:")
     for lookup_item in lookup_items:
@@ -137,15 +184,15 @@ def main():
 
     print("")
     _input = input("Type 'y' if you are happy with the above items to be registered:")
-    if _input == "y":
-        print("Registering lookup items")
-        # register_lookup_items(lookup_items=lookup_items)
-        print(f"Writing lookup items to '{lookup_items_path.resolve()}'")
-        with open(lookup_items_path, mode="w") as lookup_items_file:
-            json.dump(lookup_items, lookup_items_file, indent=2)
-    else:
+    if _input != "y":
         print("Aborted")
         exit(0)
+
+    print("Registering lookup items")
+    register_lookup_items(lookup_items=lookup_items)
+    print(f"Writing lookup items to '{lookup_items_path.resolve()}'")
+    with open(lookup_items_path, mode="w") as lookup_items_file:
+        json.dump(lookup_items, lookup_items_file, indent=2)
 
 
 if __name__ == "__main__":
