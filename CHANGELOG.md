@@ -10,17 +10,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 * Switched from Black to Ruff for code formatting
+* Updating README
 
 ## [0.1.0] - 2023-11-10
 
 ### Added
 
-* script to check all transfer option URLs are unique in a set of records, to defend against #2
-* initial project with initial scripts for: 
+* Script to check all transfer option URLs are unique in a set of records, to defend against #2
+* Initial project with initial scripts for: 
   * registering download proxy lookup items
   * updating transfer options in records to use these lookup items
   * updating release/publication dates prior to import into the ADD Metadata Toolbox
 
 ### Fixed
 
-* selection of per-record transfer option URLs based on registered lookup items
+* Selection of per-record transfer option URLs based on registered lookup items
