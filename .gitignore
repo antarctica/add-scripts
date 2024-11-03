@@ -1,4 +1,8 @@
 .idea/
 .venv
 __pycache__
+
+# data
 lookup_items.json
+/records
+next_release/
