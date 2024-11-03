@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from add_scripts.data import AddDatasetCode
+from add_scripts.data import AddDatasetCode, load_new_records
 
 OUTPUT_BASE = Path("next_release")
 
@@ -54,21 +54,6 @@ def set_record_id(record: dict, record_id: str) -> dict:
     return record
 
 
-def load_records() -> tuple[dict[AddDatasetCode, str], dict[AddDatasetCode, dict]]:
-    records_path = OUTPUT_BASE / "records"
-    records_data = {}
-    file_names = {}
-
-    for record_path in records_path.glob("*.json"):
-        record_code = AddDatasetCode[record_path.stem.split('_')[0]]
-        with record_path.open() as f:
-            record_data = json.load(f)
-        file_names[record_code] = record_path.stem
-        records_data[record_code] = record_data
-
-    return file_names, records_data
-
-
 def save_records(file_names: dict[AddDatasetCode, str], records: dict[AddDatasetCode, dict]) -> None:
     for record_code, record_data in records.items():
         file_name = file_names[record_code]
@@ -90,7 +75,7 @@ def cleanup_original_records(file_names: dict[AddDatasetCode, str]) -> None:
         record_path.unlink()
 
 def main() -> None:
-    file_names, records = load_records()
+    file_names, records = load_new_records()
     datasets = parse_table1(TABLE_1)
     records = process_resources(records, datasets)
     save_records(file_names, records)
