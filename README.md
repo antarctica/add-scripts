@@ -31,6 +31,7 @@ To use these scripts you should have:
 Scripts should be run in this order:
 
 1. [clone previous records](#clone-previous-records)
+1. [set resource identifiers](#set-resource-ids)
 1. [register download proxy items](#registering-download-proxy-items)
 1. [updating metadata records with download proxy URLs](#updating-metadata-records-with-download-proxy-urls)
 1. [checking transfer options are unique](#checking-all-records-have-unique-transfer-option-urls)
