@@ -65,7 +65,11 @@ For information, this script will:
 - save cloned records as files
 - save a MarkDown formatted table to act as a reference within the relevant release issue
 
-### Registering download proxy items
+### Classic scripts
+
+**Note:** These scripts have not yet been updated.
+
+#### Registering download proxy items
 
 This script generates and registers the download URLs that will be included in metadata records for the release.
 
@@ -100,7 +104,7 @@ For information, the steps this script performs are:
 These URLs are registered in the 
 [ADD Data Catalogue Downloads Proxy](https://gitlab.data.bas.ac.uk/MAGIC/add-metadata-toolbox/-/blob/main/README.md#user-content-downloads-proxy).
 
-### Updating metadata records with download proxy URLs
+#### Updating metadata records with download proxy URLs
 
 This script takes the download URLs generated and registered in the 
 [Registering Download Proxy Items](#registering-download-proxy-items) script, and adds them to the relevant metadata 
@@ -126,7 +130,7 @@ For information, for each record in the release this script will:
 5. if found, update the URL in the distribution option with the correct download URL (using on the artefact ID)
 6. save the metadata record back to OneDrive
 
-### Updating release and publication dates in metadata records
+#### Updating release and publication dates in metadata records
 
 This script updates the released and publication dates in each metadata record for a release. It also updates the 
 date the metadata record was last updated.
@@ -152,7 +156,7 @@ For information, for each record in the release this script will:
 4. set the metadata updated date to the current date (times are not recorded as per the ISO specification)
 5. save the metadata record back to OneDrive
 
-### Checking all records have unique transfer option URLs
+#### Checking all records have unique transfer option URLs
 
 This script checks that all records in a release have unique download URLs, to detect errors in other tasks.
 
