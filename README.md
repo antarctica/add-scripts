@@ -38,13 +38,13 @@ Scripts should be run in this order:
 
 ### Clone previous records
 
-This script copies the previous/current records for datasets that will be updated in the next release into a folder.
+This script copies previous/current records for datasets that will be updated in an upcoming release into a folder.
 
 Before running this script you will need to:
 
-- decide which datasets will be updated in the release
-- update the `DATASETS_TO_CLONE` variable in the script (comment out any items not part of the release)
-- update the `NEXT_RELEASE` variable in the script
+- decide which datasets will be updated in the upcoming release
+- update the `DATASETS_TO_CLONE` variable in the script to comment out any items not part of the release
+- update the `NEXT_RELEASE` variable in the script to the upcoming release
 
 To run this script:
 
@@ -55,11 +55,14 @@ $ poetry run python src/add_scripts/clone_records
 For information, this script will:
 
 - get the identifiers for current datasets listed in the ADD (core) collection 
-- filters these by those selected for update in the next release
-- copies the contents of these selected records into new files
-
-Output files are named in the form: `{code}_{label}-{patial id (first 8 charcters)}.json`, e.g.:
-`C01_coast_line_h-45c3cc90.json`.
+- filter these against `DATASETS_TO_CLONE`
+- copy selected records into new records
+- removes identifiers and sets the file identifier and citation to a placeholder value
+- removes distribution options except services (which are assumed to roll over)
+- sets the edition to the upcoming release
+- sets the `revisionOf` related record to the source record
+- save cloned records as files
+- save a MarkDown formatted table to act as a reference within the relevant release issue
 
 ### Registering download proxy items
 
