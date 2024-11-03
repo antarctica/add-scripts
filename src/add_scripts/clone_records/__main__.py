@@ -1,5 +1,6 @@
 import json
 from enum import Enum
+from copy import deepcopy
 from pathlib import Path
 
 
@@ -26,6 +27,7 @@ class AddDatasetCodes(Enum):
 ADD_CURRENT_COLLECTION = "e74543c0-4c4e-4b41-aa33-5bb2f67df389"
 RECORDS_BASE = Path("records")
 OUTPUT_BASE = Path("next_release")
+UPDATE_PLACEHOLDER = "!!PLACEHOLDER!!"
 
 # comment out items that are not part of the next release
 DATASETS_TO_CLONE = [
@@ -102,69 +104,130 @@ def get_selected_records() -> list[dict]:
     return selected_records
 
 
-def format_file_name(code, file_identifier):
-    if code == AddDatasetCodes.C01:
-        return f"C01_coast_line_h-{file_identifier[:8]}.json"
-    if code == AddDatasetCodes.C02:
-        return f"C02_coast_line_m-{file_identifier[:8]}.json"
-    if code == AddDatasetCodes.C03:
-        return f"C03_coast_poly_h-{file_identifier[:8]}.json"
-    if code == AddDatasetCodes.C04:
-        return f"C04_coast_poly_m-{file_identifier[:8]}.json"
-    if code == AddDatasetCodes.C05:
-        return f"C05_contours_h-{file_identifier[:8]}.json"
-    if code == AddDatasetCodes.C06:
-        return f"C06_contours_m-{file_identifier[:8]}.json"
-    if code == AddDatasetCodes.C07:
-        return f"C07_rock_auto-{file_identifier[:8]}.json"
-    if code == AddDatasetCodes.C08:
-        return f"C08_rock_poly_h-{file_identifier[:8]}.json"
-    if code == AddDatasetCodes.C09:
-        return f"C09_rock_poly_m-{file_identifier[:8]}.json"
-    if code == AddDatasetCodes.C10:
-        return f"C10_moraine_h-{file_identifier[:8]}.json"
-    if code == AddDatasetCodes.C11:
-        return f"C11_moraine_m-{file_identifier[:8]}.json"
-    if code == AddDatasetCodes.C12:
-        return f"C12_lakes_h-{file_identifier[:8]}.json"
-    if code == AddDatasetCodes.C13:
-        return f"C13_lakes_m--{file_identifier[:8]}.json"
-    if code == AddDatasetCodes.C14:
-        return f"C14_streams-{file_identifier[:8]}.json"
-    if code == AddDatasetCodes.C15:
-        return f"C15_seamask_poly_h-{file_identifier[:8]}.json"
-    if code == AddDatasetCodes.C16:
-        return f"C16_seamask_poly_m-{file_identifier[:8]}.json"
-    if code == AddDatasetCodes.C17:
-        return f"C17_data_limit-{file_identifier[:8]}.json"
+def clone_records(selected_records: list[dict]):
+    cloned_records = []
+
+    for record in selected_records:
+        clone = deepcopy(record)
+
+        # clear/remove any existing identifiers
+        clone["file_identifier"] = UPDATE_PLACEHOLDER
+        if "identifiers" in clone['identification']:
+            del clone['identification']['identifiers']
+
+        # clear citation as based on identifier
+        if "other_citation_details" in clone['identification']:
+            clone['identification']['other_citation_details'] = UPDATE_PLACEHOLDER
+
+        # update edition
+        clone["identification"]["edition"] = NEXT_RELEASE
+
+        # update revisionOf aggregation
+        if 'aggregations' in clone['identification']:
+            for i, aggregation in enumerate(clone['identification']['aggregations']):
+                if 'association_type' in aggregation and aggregation['association_type'] == 'revisionOf':
+                    clone['identification']['aggregations'][i]['identifier']['identifier'] = record['file_identifier']
+                    clone['identification']['aggregations'][i]['identifier']['href'] = f"https://data.bas.ac.uk/items/{record['file_identifier']}"
+
+        # remove distribution options, except services if present
+        distribution_options = []
+        if 'distribution' in clone:
+            for distribution in clone['distribution']:
+                if 'format' in distribution and 'href' in distribution['format'] and 'https://metadata-resources.data.bas.ac.uk/media-types/x-service/' in distribution['format']['href']:
+                    distribution_options.append(distribution)
+        clone['distribution'] = distribution_options
+        if len(distribution_options) == 0:
+            del clone['distribution']
+
+        cloned_records.append(clone)
+
+    return cloned_records
+
+
+def format_file_name(code):
+    if code == AddDatasetCode.C01:
+        return f"C01_coast_line_h.json"
+    if code == AddDatasetCode.C02:
+        return f"C02_coast_line_m.json"
+    if code == AddDatasetCode.C03:
+        return f"C03_coast_poly_h.json"
+    if code == AddDatasetCode.C04:
+        return f"C04_coast_poly_m.json"
+    if code == AddDatasetCode.C05:
+        return f"C05_contours_h.json"
+    if code == AddDatasetCode.C06:
+        return f"C06_contours_m.json"
+    if code == AddDatasetCode.C07:
+        return f"C07_rock_auto.json"
+    if code == AddDatasetCode.C08:
+        return f"C08_rock_poly_h.json"
+    if code == AddDatasetCode.C09:
+        return f"C09_rock_poly_m.json"
+    if code == AddDatasetCode.C10:
+        return f"C10_moraine_h.json"
+    if code == AddDatasetCode.C11:
+        return f"C11_moraine_m.json"
+    if code == AddDatasetCode.C12:
+        return f"C12_lakes_h.json"
+    if code == AddDatasetCode.C13:
+        return f"C13_lakes_m.json"
+    if code == AddDatasetCode.C14:
+        return f"C14_streams.json"
+    if code == AddDatasetCode.C15:
+        return f"C15_seamask_poly_h.json"
+    if code == AddDatasetCode.C16:
+        return f"C16_seamask_poly_m.json"
+    if code == AddDatasetCode.C17:
+        return f"C17_data_limit.json"
 
     raise ValueError(f"Unknown dataset code: {code}")
 
 
-def save_selected_records():
-    print(f"Any existing records in '{OUTPUT_BASE.resolve()}' will be deleted.")
+def save_cloned_records(cloned_records: list[dict]):
+    records_base = OUTPUT_BASE / "records"
+    records_base.mkdir(parents=True, exist_ok=True)
+    print(f"Any existing records in '{records_base.resolve()}' will be deleted.")
     _input = input("Type 'y' if you are happy with this:")
     if _input != "y":
         print("Aborted")
         exit(0)
 
-    OUTPUT_BASE.mkdir(parents=True, exist_ok=True)
-    for record in OUTPUT_BASE.glob("*.json"):
+    for record in records_base.glob("*.json"):
         record.unlink()
 
-    for record in get_selected_records():
-        record_code = AddDatasetCodes(record["identification"]["title"]["value"])
-        record_path = OUTPUT_BASE / format_file_name(
-            record_code, record["file_identifier"]
-        )
+    for record in cloned_records:
+        record_code = AddDatasetCode(record["identification"]["title"]["value"])
+        record_path = records_base / format_file_name(record_code)
         with record_path.open(mode="w") as f:
             json.dump(record, f, indent=2)
 
-    print(f"Selected dataset records cloned to '{OUTPUT_BASE.resolve()}'")
+    print(f"Selected dataset records cloned to '{records_base.resolve()}'")
+
+
+def make_table(selected_records: list[dict]):
+    table_path = OUTPUT_BASE / "table1.md"
+    table_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with table_path.open(mode="w") as f:
+        f.write("| # | Title | Previous ID | Previous Edition | New ID | New Edition |\n")
+        f.write("| - | ----- | ----------- | ---------------- | ------ | ----------- |\n")
+        for record in selected_records:
+            title = record["identification"]["title"]["value"]
+            code = AddDatasetCode(title)
+            previous_id = record["file_identifier"]
+            previous_edition = record["identification"]["edition"]
+            f.write(
+                f"| {code.name} | {title} | {previous_id} | {previous_edition} | {' ' * 36} | {NEXT_RELEASE} |\n"
+            )
+
+    print(f"Table written to '{table_path.resolve()}'")
 
 
 def main():
-    save_selected_records()
+    selected_records = get_selected_records()
+    cloned_records = clone_records(selected_records)
+    save_cloned_records(cloned_records)
+    make_table(selected_records)
     print("Script exited normally.")
 
 
