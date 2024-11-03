@@ -21,7 +21,9 @@ def set_dates(resource_config: Dict):
 
 
 def main():
-    print(f"Metadata records in this path will be updated: {metadata_records_path.resolve()}")
+    print(
+        f"Metadata records in this path will be updated: {metadata_records_path.resolve()}"
+    )
     _input = input("Type 'y' if you are happy with this path:")
     if _input != "y":
         print("Aborted")

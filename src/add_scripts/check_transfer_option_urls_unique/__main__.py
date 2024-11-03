@@ -15,11 +15,13 @@ def get_transfer_option_urls(record_config: dict) -> Dict[str, str]:
     transfer_option_urls: Dict[str, str] = {}
 
     for distribution in record_config["distribution"]:
-
         if "href" not in distribution["format"]:
             continue
 
-        if distribution["transfer_option"]["online_resource"]["href"] == 'https://data.bas.ac.uk/download/':
+        if (
+            distribution["transfer_option"]["online_resource"]["href"]
+            == "https://data.bas.ac.uk/download/"
+        ):
             print(
                 f"Record ID [{record_config['file_identifier']}] has a transfer option without an artefact ID"
             )
@@ -32,7 +34,7 @@ def get_transfer_option_urls(record_config: dict) -> Dict[str, str]:
 
 
 def list_non_unique_transfer_option_urls(
-    transfer_urls_by_record: Dict[str, Dict[str, str]]
+    transfer_urls_by_record: Dict[str, Dict[str, str]],
 ) -> None:
     for source_record_id, source_transfer_urls in transfer_urls_by_record.items():
         for source_media_type, source_transfer_url in source_transfer_urls.items():

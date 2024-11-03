@@ -163,10 +163,10 @@ $ poetry install
 
 ### Code formatting
 
-All source code should be ran through the Black code formatter:
+All source code should be run through the Ruff code formatter:
 
 ```
-$ poetry run black src/
+$ poetry run ruff --format src/
 ```
 
 ## Licence

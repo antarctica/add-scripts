@@ -55,16 +55,18 @@ def set_resource_distribution_option_uris(
         if lookup_item is None:
             continue
 
-        distribution_option["transfer_option"]["online_resource"][
-            "href"
-        ] = f"https://data.bas.ac.uk/download/{lookup_item['artefact_id']}"
+        distribution_option["transfer_option"]["online_resource"]["href"] = (
+            f"https://data.bas.ac.uk/download/{lookup_item['artefact_id']}"
+        )
         resource_config["distribution"][i] = distribution_option
 
     return resource_config
 
 
 def main():
-    print(f"Metadata records in this path will be updated: {metadata_records_path.resolve()}")
+    print(
+        f"Metadata records in this path will be updated: {metadata_records_path.resolve()}"
+    )
     _input = input("Type 'y' if you are happy with this path:")
     if _input != "y":
         print("Aborted")

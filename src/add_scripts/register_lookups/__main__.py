@@ -32,7 +32,9 @@ table2 = """| Dataset Title            | File Type                  | Direct Lin
 | Medium resolution seamask | Shapefile  | https://ramadda.data.bas.ac.uk/repository/entry/get/add_seamask_medium_res_v7_6.shp.zip?entryid=synth%3A217b8fde-5664-4ff5-8f30-0cf8c1f14be7%3AL2FkZF9zZWFtYXNrX21lZGl1bV9yZXNfdjdfNi5zaHAuemlw |
 | Medium resolution seamask | Geopackage | https://ramadda.data.bas.ac.uk/repository/entry/get/add_seamask_medium_res_v7_6.gpkg?entryid=synth%3A217b8fde-5664-4ff5-8f30-0cf8c1f14be7%3AL2FkZF9zZWFtYXNrX21lZGl1bV9yZXNfdjdfNi5ncGtn |"""
 
-lambda_endpoint = "https://zrpqdlufnfqcmqmzppwzegosvu0rvbca.lambda-url.eu-west-1.on.aws/"  # staging
+lambda_endpoint = (
+    "https://zrpqdlufnfqcmqmzppwzegosvu0rvbca.lambda-url.eu-west-1.on.aws/"  # staging
+)
 # lambda_endpoint = "https://dvej4gdfa333uci4chyhkxj3wq0fkxrs.lambda-url.eu-west-1.on.aws/"  # production
 
 lookup_items_path = Path("lookup_items.json")
