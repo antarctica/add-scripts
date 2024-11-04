@@ -1,4 +1,5 @@
 import json
+from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
 
@@ -53,3 +54,22 @@ def load_new_records() -> tuple[dict[AddDatasetCode, str], dict[AddDatasetCode, 
         records_data[record_code] = record_data
 
     return file_names, records_data
+
+
+def save_new_records(file_names: dict[AddDatasetCode, str], records: dict[AddDatasetCode, dict]) -> None:
+    for record_code, record_data in records.items():
+        file_name = file_names[record_code]
+        record_id = record_data['file_identifier']
+        if record_id[:8] not in file_name:
+            file_name = f"{file_name}-{record_id[:8]}"
+        record_path = OUTPUT_BASE / "records" / f"{file_name}.json"
+        with record_path.open(mode="w") as f:
+            json.dump(record_data, f, indent=2)
+
+
+def update_record_date_stamp(record: dict) -> dict:
+    now = datetime.now(tz=timezone.utc).replace(microsecond=0)
+    record['metadata']['date_stamp'] = now.strftime("%Y-%m-%d")
+    return record
+
+

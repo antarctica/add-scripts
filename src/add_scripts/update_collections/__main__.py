@@ -1,12 +1,9 @@
-from datetime import datetime
-from typing import Optional
-
-from add_scripts.data import ADD_CURRENT_COLLECTION, ADD_PREVIOUS_COLLECTION, load_record_from_store, load_new_records, save_record_to_store
+from add_scripts.data import ADD_CURRENT_COLLECTION, ADD_PREVIOUS_COLLECTION, load_record_from_store, load_new_records, save_record_to_store, update_record_date_stamp
 
 
 def increment_collection_edition(collection: dict) -> dict:
     collection['identification']["edition"] = str(int(collection['identification']["edition"]) + 1)
-    collection["metadata"]['date_stamp'] = datetime.now().strftime("%Y-%m-%d")
+    collection = update_record_date_stamp(collection)
     return collection
 
 

@@ -1,9 +1,6 @@
-import json
-from pathlib import Path
+from add_scripts.data import AddDatasetCode, load_new_records, save_new_records, load_table, OUTPUT_BASE
 
-from add_scripts.data import AddDatasetCode, load_new_records
 
-OUTPUT_BASE = Path("next_release")
 
 TABLE_1 = """| # | Title | Previous ID | Previous Edition | New ID | New Edition |
 | - | ----- | ----------- | ---------------- | ------ | ----------- |
@@ -54,15 +51,6 @@ def set_record_id(record: dict, record_id: str) -> dict:
     return record
 
 
-def save_records(file_names: dict[AddDatasetCode, str], records: dict[AddDatasetCode, dict]) -> None:
-    for record_code, record_data in records.items():
-        file_name = file_names[record_code]
-        record_id = record_data['file_identifier']
-        record_path = OUTPUT_BASE / "records" / f"{file_name}-{record_id[:8]}.json"
-        with record_path.open(mode="w") as f:
-            json.dump(record_data, f, indent=2)
-
-
 def process_resources(records: dict[AddDatasetCode, dict], datasets: list[dict]) -> dict[AddDatasetCode, dict]:
     for dataset in datasets:
         record = records[dataset['code']]
@@ -78,7 +66,7 @@ def main() -> None:
     file_names, records = load_new_records()
     datasets = parse_table1(TABLE_1)
     records = process_resources(records, datasets)
-    save_records(file_names, records)
+    save_new_records(file_names, records)
     cleanup_original_records(file_names)
     print("Script exited normally.")
 
