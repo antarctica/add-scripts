@@ -3,7 +3,12 @@ from copy import deepcopy
 
 import inquirer
 
-from add_scripts.data import AddDatasetCode, ADD_CURRENT_COLLECTION, OUTPUT_BASE, load_record_from_store
+from add_scripts.data import (
+    AddDatasetCode,
+    ADD_CURRENT_COLLECTION,
+    OUTPUT_BASE,
+    load_record_from_store,
+)
 
 
 UPDATE_PLACEHOLDER = "!!PLACEHOLDER!!"
@@ -19,15 +24,18 @@ DEFAULT_DATASETS_TO_CLONE = [
 
 def prompt_for_settings() -> tuple[str, list[AddDatasetCode]]:
     questions = [
-        inquirer.Text(name='release', message="What is the next release version?"),
+        inquirer.Text(name="release", message="What is the next release version?"),
         inquirer.Checkbox(
-            name='datasets_core',
+            name="datasets_core",
             message="Which core datasets will change in this release?",
             choices=[(dataset.value, dataset.name) for dataset in AddDatasetCode],
-            default=DEFAULT_DATASETS_TO_CLONE),
+            default=DEFAULT_DATASETS_TO_CLONE,
+        ),
     ]
     answers = inquirer.prompt(questions)
-    return answers['release'], [AddDatasetCode[dataset] for dataset in answers['datasets_core']]
+    return answers["release"], [
+        AddDatasetCode[dataset] for dataset in answers["datasets_core"]
+    ]
 
 
 def get_collection_record_ids(record: dict) -> list[str]:
@@ -82,32 +90,44 @@ def clone_records(selected_records: list[dict], next_release: str):
 
         # clear/remove any existing identifiers
         clone["file_identifier"] = UPDATE_PLACEHOLDER
-        if "identifiers" in clone['identification']:
-            del clone['identification']['identifiers']
+        if "identifiers" in clone["identification"]:
+            del clone["identification"]["identifiers"]
 
         # clear citation as based on identifier
-        if "other_citation_details" in clone['identification']:
-            clone['identification']['other_citation_details'] = UPDATE_PLACEHOLDER
+        if "other_citation_details" in clone["identification"]:
+            clone["identification"]["other_citation_details"] = UPDATE_PLACEHOLDER
 
         # update edition
         clone["identification"]["edition"] = next_release
 
         # update revisionOf aggregation
-        if 'aggregations' in clone['identification']:
-            for i, aggregation in enumerate(clone['identification']['aggregations']):
-                if 'association_type' in aggregation and aggregation['association_type'] == 'revisionOf':
-                    clone['identification']['aggregations'][i]['identifier']['identifier'] = record['file_identifier']
-                    clone['identification']['aggregations'][i]['identifier']['href'] = f"https://data.bas.ac.uk/items/{record['file_identifier']}"
+        if "aggregations" in clone["identification"]:
+            for i, aggregation in enumerate(clone["identification"]["aggregations"]):
+                if (
+                    "association_type" in aggregation
+                    and aggregation["association_type"] == "revisionOf"
+                ):
+                    clone["identification"]["aggregations"][i]["identifier"][
+                        "identifier"
+                    ] = record["file_identifier"]
+                    clone["identification"]["aggregations"][i]["identifier"]["href"] = (
+                        f"https://data.bas.ac.uk/items/{record['file_identifier']}"
+                    )
 
         # remove distribution options, except services if present
         distribution_options = []
-        if 'distribution' in clone:
-            for distribution in clone['distribution']:
-                if 'format' in distribution and 'href' in distribution['format'] and 'https://metadata-resources.data.bas.ac.uk/media-types/x-service/' in distribution['format']['href']:
+        if "distribution" in clone:
+            for distribution in clone["distribution"]:
+                if (
+                    "format" in distribution
+                    and "href" in distribution["format"]
+                    and "https://metadata-resources.data.bas.ac.uk/media-types/x-service/"
+                    in distribution["format"]["href"]
+                ):
                     distribution_options.append(distribution)
-        clone['distribution'] = distribution_options
+        clone["distribution"] = distribution_options
         if len(distribution_options) == 0:
-            del clone['distribution']
+            del clone["distribution"]
 
         cloned_records.append(clone)
 
@@ -179,8 +199,12 @@ def make_table(selected_records: list[dict], next_release: str):
     table_path.parent.mkdir(parents=True, exist_ok=True)
 
     with table_path.open(mode="w") as f:
-        f.write("| # | Title | Previous ID | Previous Edition | New ID | New Edition |\n")
-        f.write("| - | ----- | ----------- | ---------------- | ------ | ----------- |\n")
+        f.write(
+            "| # | Title | Previous ID | Previous Edition | New ID | New Edition |\n"
+        )
+        f.write(
+            "| - | ----- | ----------- | ---------------- | ------ | ----------- |\n"
+        )
         for record in selected_records:
             title = record["identification"]["title"]["value"]
             code = AddDatasetCode(title)
