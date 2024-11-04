@@ -1,5 +1,6 @@
 from add_scripts.data import load_new_records
 
+
 def get_transfer_option_urls(record: dict) -> list[tuple[str, str]]:
     transfer_option_urls = []
 
@@ -12,13 +13,16 @@ def get_transfer_option_urls(record: dict) -> list[tuple[str, str]]:
     return transfer_option_urls
 
 
-
-def check_transfer_options(records: list[dict]) -> tuple[dict[str, list[tuple[str, str, str]]], list[tuple[str, str]]]:
+def check_transfer_options(
+    records: list[dict],
+) -> tuple[dict[str, list[tuple[str, str, str]]], list[tuple[str, str]]]:
     urls_flat: list[tuple[str, str, str]] = []
     for record in records:
         record_id = record["file_identifier"]
         for item in get_transfer_option_urls(record):
-            urls_flat.append((record_id, item[0], item[1]))  # record_id, media_type, url
+            urls_flat.append(
+                (record_id, item[0], item[1])
+            )  # record_id, media_type, url
 
     # check for duplicate urls
     urls_list = []
@@ -44,7 +48,9 @@ def check_transfer_options(records: list[dict]) -> tuple[dict[str, list[tuple[st
     return duplicate_items, missing_artefacts
 
 
-def report_duplicate_urls(duplicate_items: dict[str, list[tuple[str, str, str]]]) -> None:
+def report_duplicate_urls(
+    duplicate_items: dict[str, list[tuple[str, str, str]]],
+) -> None:
     if len(duplicate_items) == 0:
         print("No duplicate transfer options found.")
         return
@@ -55,6 +61,7 @@ def report_duplicate_urls(duplicate_items: dict[str, list[tuple[str, str, str]]]
             print(f"  - Record ID: {item[0]} (Media type: {item[1]})")
     print("")
 
+
 def report_incomplete_urls(incomplete_items: list[tuple[str, str]]) -> None:
     if len(incomplete_items) == 0:
         print("No transfer options without artefacts found.")
@@ -63,6 +70,7 @@ def report_incomplete_urls(incomplete_items: list[tuple[str, str]]) -> None:
     for item in incomplete_items:
         print(f"- Record ID: {item[0]} (Media type: {item[1]})")
     print("")
+
 
 def main() -> None:
     file_names, records = load_new_records()

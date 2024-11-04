@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 * Switched from Black to Ruff for code formatting
-* Updating README
+* README updates
 * Rewrite of check transfer options script
 * Rewrite of set dates script
 * Rewrite of set transfer options script

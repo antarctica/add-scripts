@@ -47,7 +47,7 @@ def load_new_records() -> tuple[dict[AddDatasetCode, str], dict[AddDatasetCode, 
     file_names = {}
 
     for record_path in records_path.glob("*.json"):
-        record_code = AddDatasetCode[record_path.stem.split('_')[0]]
+        record_code = AddDatasetCode[record_path.stem.split("_")[0]]
         with record_path.open() as f:
             record_data = json.load(f)
         file_names[record_code] = record_path.stem
@@ -56,10 +56,12 @@ def load_new_records() -> tuple[dict[AddDatasetCode, str], dict[AddDatasetCode, 
     return file_names, records_data
 
 
-def save_new_records(file_names: dict[AddDatasetCode, str], records: dict[AddDatasetCode, dict]) -> None:
+def save_new_records(
+    file_names: dict[AddDatasetCode, str], records: dict[AddDatasetCode, dict]
+) -> None:
     for record_code, record_data in records.items():
         file_name = file_names[record_code]
-        record_id = record_data['file_identifier']
+        record_id = record_data["file_identifier"]
         if record_id[:8] not in file_name:
             file_name = f"{file_name}-{record_id[:8]}"
         record_path = OUTPUT_BASE / "records" / f"{file_name}.json"
@@ -69,27 +71,28 @@ def save_new_records(file_names: dict[AddDatasetCode, str], records: dict[AddDat
 
 def update_record_date_stamp(record: dict) -> dict:
     now = datetime.now(tz=timezone.utc).replace(microsecond=0)
-    record['metadata']['date_stamp'] = now.strftime("%Y-%m-%d")
+    record["metadata"]["date_stamp"] = now.strftime("%Y-%m-%d")
     return record
 
 
 def parse_markdown_table(table: str) -> list[dict]:
-    lines = table.split('\n')
-    headers = lines[0].split('|')
+    lines = table.split("\n")
+    headers = lines[0].split("|")
     headers = [h.strip() for h in headers if h.strip()]
     data = []
     for line in lines[2:]:
-        row = line.split('|')
+        row = line.split("|")
         row = [r.strip() for r in row if r.strip()]
         row = dict(zip(headers, row))
         data.append(row)
     return data
 
+
 def load_table(table_path: Path) -> list[dict]:
     with table_path.open() as f:
         table = f.read()
         # trim blank last line if present
-        if table[-1] == '\n':
+        if table[-1] == "\n":
             table = table[:-1]
 
     return parse_markdown_table(table)

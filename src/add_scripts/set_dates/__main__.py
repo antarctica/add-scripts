@@ -1,22 +1,27 @@
 from datetime import datetime, timezone
 
-from add_scripts.data import load_new_records, save_new_records, update_record_date_stamp
+from add_scripts.data import (
+    load_new_records,
+    save_new_records,
+    update_record_date_stamp,
+)
 
 
 def update_dates(record: dict) -> dict:
     now = datetime.now(tz=timezone.utc).replace(microsecond=0)
 
     # handle new records
-    if 'publication' not in record["identification"]["dates"]:
-        record["identification"]["dates"]["publication"] = ''
-    if 'released' not in record["identification"]["dates"]:
-        record["identification"]["dates"]["released"] = ''
+    if "publication" not in record["identification"]["dates"]:
+        record["identification"]["dates"]["publication"] = ""
+    if "released" not in record["identification"]["dates"]:
+        record["identification"]["dates"]["released"] = ""
 
     record["identification"]["dates"]["publication"] = now.isoformat()
     record["identification"]["dates"]["released"] = now.isoformat()
     record = update_record_date_stamp(record)
 
     return record
+
 
 def main() -> None:
     file_names, records = load_new_records()
