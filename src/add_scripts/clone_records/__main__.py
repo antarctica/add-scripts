@@ -1,34 +1,33 @@
 import json
 from copy import deepcopy
 
+import inquirer
+
 from add_scripts.data import AddDatasetCode, ADD_CURRENT_COLLECTION, OUTPUT_BASE, load_record_from_store
 
 
 UPDATE_PLACEHOLDER = "!!PLACEHOLDER!!"
-
-# comment out items that are not part of the next release
-DATASETS_TO_CLONE = [
-    AddDatasetCode.C01,  # coast_line_h
-    AddDatasetCode.C02,  # coast_line_m
-    AddDatasetCode.C03,  # coast_poly_h
-    AddDatasetCode.C04,  # coast_poly_m
-    AddDatasetCode.C05,  # contours_h
-    AddDatasetCode.C06,  # contours_m
-    AddDatasetCode.C07,  # rock_auto
-    AddDatasetCode.C08,  # rock_poly_h
-    AddDatasetCode.C09,  # rock_poly_m
-    AddDatasetCode.C10,  # moraine_h
-    AddDatasetCode.C11,  # moraine_m
-    AddDatasetCode.C12,  # lakes_h
-    AddDatasetCode.C13,  # lakes_m
-    AddDatasetCode.C14,  # streams
-    AddDatasetCode.C15,  # seamask_poly_h
-    AddDatasetCode.C16,  # seamask_poly_m
-    AddDatasetCode.C17,  # data_limit
+DEFAULT_DATASETS_TO_CLONE = [
+    AddDatasetCode.C01.name,  # coast_line_h
+    AddDatasetCode.C02.name,  # coast_line_m
+    AddDatasetCode.C03.name,  # coast_poly_h
+    AddDatasetCode.C04.name,  # coast_poly_m
+    AddDatasetCode.C15.name,  # seamask_poly_h
+    AddDatasetCode.C16.name,  # seamask_poly_m
 ]
 
-# change to next release version
-NEXT_RELEASE = "7.10"
+
+def prompt_for_settings() -> tuple[str, list[AddDatasetCode]]:
+    questions = [
+        inquirer.Text(name='release', message="What is the next release version?"),
+        inquirer.Checkbox(
+            name='datasets_core',
+            message="Which core datasets will change in this release?",
+            choices=[(dataset.value, dataset.name) for dataset in AddDatasetCode],
+            default=DEFAULT_DATASETS_TO_CLONE),
+    ]
+    answers = inquirer.prompt(questions)
+    return answers['release'], [AddDatasetCode[dataset] for dataset in answers['datasets_core']]
 
 
 def get_collection_record_ids(record: dict) -> list[str]:
@@ -65,17 +64,17 @@ def index_add_records() -> dict[str, dict]:
     return current_records
 
 
-def get_selected_records() -> list[dict]:
+def get_selected_records(selected_datasets: list[AddDatasetCode]) -> list[dict]:
     selected_records = []
     current_records = index_add_records()
 
-    for dataset in DATASETS_TO_CLONE:
+    for dataset in selected_datasets:
         selected_records.append(current_records[dataset.name])
 
     return selected_records
 
 
-def clone_records(selected_records: list[dict]):
+def clone_records(selected_records: list[dict], next_release: str):
     cloned_records = []
 
     for record in selected_records:
@@ -91,7 +90,7 @@ def clone_records(selected_records: list[dict]):
             clone['identification']['other_citation_details'] = UPDATE_PLACEHOLDER
 
         # update edition
-        clone["identification"]["edition"] = NEXT_RELEASE
+        clone["identification"]["edition"] = next_release
 
         # update revisionOf aggregation
         if 'aggregations' in clone['identification']:
@@ -175,7 +174,7 @@ def save_cloned_records(cloned_records: list[dict]):
     print(f"Selected dataset records cloned to '{records_base.resolve()}'")
 
 
-def make_table(selected_records: list[dict]):
+def make_table(selected_records: list[dict], next_release: str):
     table_path = OUTPUT_BASE / "table1.md"
     table_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -188,17 +187,18 @@ def make_table(selected_records: list[dict]):
             previous_id = record["file_identifier"]
             previous_edition = record["identification"]["edition"]
             f.write(
-                f"| {code.name} | {title} | {previous_id} | {previous_edition} | {' ' * 36} | {NEXT_RELEASE} |\n"
+                f"| {code.name} | {title} | {previous_id} | {previous_edition} | {' ' * 36} | {next_release} |\n"
             )
 
     print(f"Table written to '{table_path.resolve()}'")
 
 
 def main():
-    selected_records = get_selected_records()
-    cloned_records = clone_records(selected_records)
+    next_release, selected_datasets = prompt_for_settings()
+    selected_records = get_selected_records(selected_datasets)
+    cloned_records = clone_records(selected_records, next_release)
     save_cloned_records(cloned_records)
-    make_table(selected_records)
+    make_table(selected_records, next_release)
     print("Script exited normally.")
 
 
