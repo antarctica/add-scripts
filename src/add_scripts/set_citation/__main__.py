@@ -20,8 +20,12 @@ def process_citations(rows: list[dict]) -> dict[str, tuple[dict, str]]:
 
     for row in rows:
         record_elements = (
-            {"identifier": row['doi_identifier'], "href": f"https://doi.org/{row['doi_identifier']}", "namespace": "doi"},
-            row['citation'],
+            {
+                "identifier": row["doi_identifier"],
+                "href": f"https://doi.org/{row['doi_identifier']}",
+                "namespace": "doi",
+            },
+            row["citation"],
         )
 
         elements[row["record_id"]] = record_elements
@@ -30,15 +34,15 @@ def process_citations(rows: list[dict]) -> dict[str, tuple[dict, str]]:
 
 
 def set_citation(record: dict, elements: tuple[dict, str]) -> dict:
-    record['identification']['other_citation_details'] = elements[1]
+    record["identification"]["other_citation_details"] = elements[1]
 
     add_identifier = True
-    for identifier in record['identification']['identifiers']:
-        if identifier['namespace'] == 'doi':
+    for identifier in record["identification"]["identifiers"]:
+        if identifier["namespace"] == "doi":
             add_identifier = False
             break
     if add_identifier:
-        record['identification']['identifiers'].append(elements[0])
+        record["identification"]["identifiers"].append(elements[0])
 
     return record
 
