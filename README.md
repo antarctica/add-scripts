@@ -40,6 +40,7 @@ Scripts must be run in this order:
 1. [update collections](#update-collections)
 2. [set transfer options](#set-transfer-options)
 1. [check transfer options](#check-transfer-options)
+1. [set citation](#set-citation)
 1. [update dates](#update-dates)
 
 ### Clone previous records
@@ -177,6 +178,29 @@ For information, this script will:
 - for each set of matching tuples, add to a dict indexed by transfer_option
 - check whether each transfer_url points to the Download Proxy, and if so, has an artefact specified
 - report on any duplicate or incomplete URLs found
+
+### Set citation
+
+This script sets the citation and ads an identifier for a DOI in each record in the upcoming release.
+
+Before running this script you will need to:
+
+- have run the [Set Resource IDs](#set-resource-ids) script
+- copy a completed *table 3* from a release issue into `next_release/table3.md`
+
+To run this script:
+
+```
+$ poetry run python src/add_scripts/set_citation
+```
+
+For information, this script will:
+
+- load new records and index them by ADD Dataset Code
+- parse *table 3* as a MarkDown formatted string (representing a table), indexed by resource/record identifier
+- process this information into a DOI identifier and 'other citation details' elements
+- append the DOI identifier if not present and set the other citation details element
+- save new records
 
 ### Update dates
 
