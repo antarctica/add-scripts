@@ -8,7 +8,7 @@ from add_scripts.data import (
     ADD_CURRENT_COLLECTION,
     OUTPUT_BASE,
     load_record_from_store,
-    get_collection_record_ids
+    get_collection_record_ids,
 )
 
 
