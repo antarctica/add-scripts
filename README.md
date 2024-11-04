@@ -34,8 +34,8 @@ Scripts should be run in this order:
 1. [set resource identifiers](#set-resource-ids)
 1. [update collections](#update-collections)
 1. [register download proxy items](#registering-download-proxy-items)
-1. [updating metadata records with download proxy URLs](#updating-metadata-records-with-download-proxy-urls)
 1. [checking transfer options are unique](#checking-all-records-have-unique-transfer-option-urls)
+2. [set transfer options](#set-transfer-options)
 1. [update dates](#update-dates)
 
 ### Clone previous records
@@ -124,28 +124,36 @@ For information, the steps this script performs are:
 7. saving the registered lookup items in a local file: `lookup_items.json`
 
 **Note:** The artefact IDs generated for each lookup item are random, and change each time this script is run.
+### Set transfer options
 
 These URLs are registered in the 
 [ADD Data Catalogue Downloads Proxy](https://gitlab.data.bas.ac.uk/MAGIC/add-metadata-toolbox/-/blob/main/README.md#user-content-downloads-proxy).
-
-#### Updating metadata records with download proxy URLs
-
-This script takes the download URLs generated and registered in the 
-[Registering Download Proxy Items](#registering-download-proxy-items) script, and adds them to the relevant metadata 
-record.
+This script sets distribution options (downloads) in each record in the upcoming release.
 
 Before running this script you will need to:
 
-1. check the `lookup_items.json` file contains the right set of lookup items for the release
-2. **IMPORTANT!** check the `metadata_records_path` variable points to the right release
+- have run the [Set Resource IDs](#set-resource-ids) script
+- copy a completed *table 2* from a release issue into `next_release/table2.md`
+
+Any existing distribution options are not be removed, including those added by this script. This means you may need to
+manually remove duplicate distribution options if running this script more than once.
+
+**Note:** This script only supports 
+[GeoPackage](https://www.iana.org/assignments/media-types/application/geopackage+sqlite3) and 
+[Zipped Shapefile](https://metadata-resources.data.bas.ac.uk/media-types/application/vnd.shp+zip) as distribution 
+formats.
+
+**Note:** It is assumed all transfer options recorded in *table 2* are files deposited with PDC, and so hard-codes the
+PDC contact as the distributor role.
 
 To run this script:
 
 ```
-$ poetry run python src/add_scripts/set_transfer_option_urls
+$ poetry run python src/add_scripts/set_transfer_options
 ```
 
 For information, for each record in the release this script will:
+For information, this script will:
 
 1. load the metadata record from OneDrive
 2. load the lookup items from `lookup_items.json`
@@ -153,6 +161,11 @@ For information, for each record in the release this script will:
 4. for each distribution option in the metadata record, try and find a matching lookup item
 5. if found, update the URL in the distribution option with the correct download URL (using on the artefact ID)
 6. save the metadata record back to OneDrive
+- load new records and index them by ADD Dataset Code
+- parse *table 2* as a MarkDown formatted string (representing a table), indexed by resource/record identifier
+- process this information into distribution options, including format, transfer option (size and URL) and distributor
+- append distribution options to each record
+- save new records
 
 
 

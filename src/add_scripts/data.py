@@ -73,3 +73,23 @@ def update_record_date_stamp(record: dict) -> dict:
     return record
 
 
+def parse_markdown_table(table: str) -> list[dict]:
+    lines = table.split('\n')
+    headers = lines[0].split('|')
+    headers = [h.strip() for h in headers if h.strip()]
+    data = []
+    for line in lines[2:]:
+        row = line.split('|')
+        row = [r.strip() for r in row if r.strip()]
+        row = dict(zip(headers, row))
+        data.append(row)
+    return data
+
+def load_table(table_path: Path) -> list[dict]:
+    with table_path.open() as f:
+        table = f.read()
+        # trim blank last line if present
+        if table[-1] == '\n':
+            table = table[:-1]
+
+    return parse_markdown_table(table)
