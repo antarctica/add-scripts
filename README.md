@@ -45,8 +45,6 @@ This script copies previous/current records for datasets that will be updated in
 Before running this script you will need to:
 
 - decide which datasets will be updated in the upcoming release
-- update the `DATASETS_TO_CLONE` variable in the script to comment out any items not part of the release
-- update the `NEXT_RELEASE` variable in the script to the upcoming release
 
 To run this script:
 
@@ -56,6 +54,8 @@ $ poetry run python src/add_scripts/clone_records
 
 For information, this script will:
 
+- prompt for the next release version (e.g. '7.10')
+- prompt for the datasets that should be cloned (datasets that typically change are selected by default)
 - get the identifiers for current datasets listed in the ADD (core) collection 
 - filter these against `DATASETS_TO_CLONE`
 - copy selected records into new records
