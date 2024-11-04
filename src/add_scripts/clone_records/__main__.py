@@ -8,6 +8,7 @@ from add_scripts.data import (
     ADD_CURRENT_COLLECTION,
     OUTPUT_BASE,
     load_record_from_store,
+    get_collection_record_ids
 )
 
 
@@ -36,23 +37,6 @@ def prompt_for_settings() -> tuple[str, list[AddDatasetCode]]:
     return answers["release"], [
         AddDatasetCode[dataset] for dataset in answers["datasets_core"]
     ]
-
-
-def get_collection_record_ids(record: dict) -> list[str]:
-    related_ids = []
-
-    if "identification" in record and "aggregations" in record["identification"]:
-        for aggregation in record["identification"]["aggregations"]:
-            if (
-                "association_type" in aggregation
-                and aggregation["association_type"] == "isComposedOf"
-                and "initiative_type" in aggregation
-                and aggregation["initiative_type"] == "collection"
-                and "identifier" in aggregation
-            ):
-                related_ids.append(aggregation["identifier"]["identifier"])
-
-    return related_ids
 
 
 def index_add_records() -> dict[str, dict]:

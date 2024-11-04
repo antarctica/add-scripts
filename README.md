@@ -39,6 +39,7 @@ Scripts must be run in this order:
 1. [set resource identifiers](#set-resource-ids)
 1. [update collections](#update-collections)
 2. [set transfer options](#set-transfer-options)
+1. [clean up services](#clean-up-services)
 1. [check transfer options](#check-transfer-options)
 1. [set citation](#set-citation)
 1. [update dates](#update-dates)
@@ -116,6 +117,30 @@ For information, this script will:
 - update the current ADD (core) collection items, to replace the identifiers for any records that have been cloned
 - update the metadata date stamp and increment the edition of the previous & current ADD records collections
 - save updated collections back to the records store
+
+### Clean up services
+
+This script checks records in the previous versions collection and removes any service based distribution options from
+any records it contains.
+
+When datasets are replaced, the older record needs updating to remove any services it may have listed, as ADD services
+only relate to current datasets, represented by the current (core) ADD collection.
+
+Before running this script you will need to:
+
+- have run the [Update Collections](#update-collections) script
+
+To run this script:
+
+```
+$ poetry run python src/add_scripts/clean_services
+```
+
+For information, this script will:
+
+- load records contained in the previous ADD (core)
+- check if a record contains distribution options relating to a service, and if so removes them
+- update the metadata date stamp for any record that is updated and save the record back to the records store
 
 ### Set transfer options
 
