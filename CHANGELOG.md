@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Initial set resource IDs script
 * Initial update collections script
 * Initial set citation script
+* Initial services cleanup script
 
 ### Changed
 

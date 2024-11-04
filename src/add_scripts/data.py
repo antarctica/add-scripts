@@ -96,3 +96,20 @@ def load_table(table_path: Path) -> list[dict]:
             table = table[:-1]
 
     return parse_markdown_table(table)
+
+
+def get_collection_record_ids(record: dict) -> list[str]:
+    related_ids = []
+
+    if "identification" in record and "aggregations" in record["identification"]:
+        for aggregation in record["identification"]["aggregations"]:
+            if (
+                "association_type" in aggregation
+                and aggregation["association_type"] == "isComposedOf"
+                and "initiative_type" in aggregation
+                and aggregation["initiative_type"] == "collection"
+                and "identifier" in aggregation
+            ):
+                related_ids.append(aggregation["identifier"]["identifier"])
+
+    return related_ids
