@@ -33,13 +33,13 @@ To use these scripts you will need a records store which must:
 **Note:** It is strongly recommended that this store be under version control, so you can easily see, and if needed 
 revert, changes to records made by these scripts.
 
-Scripts must be run in this order:
+Scripts should be run in this order (some scripts require other scripts to be run first):
 
 1. [clone previous records](#clone-previous-records)
 1. [set resource identifiers](#set-resource-ids)
 1. [update collections](#update-collections)
-2. [set transfer options](#set-transfer-options)
 1. [clean up services](#clean-up-services)
+1. [set transfer options](#set-transfer-options)
 1. [check transfer options](#check-transfer-options)
 1. [set citation](#set-citation)
 1. [update dates](#update-dates)
