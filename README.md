@@ -33,7 +33,6 @@ Scripts should be run in this order:
 1. [clone previous records](#clone-previous-records)
 1. [set resource identifiers](#set-resource-ids)
 1. [update collections](#update-collections)
-1. [register download proxy items](#registering-download-proxy-items)
 2. [set transfer options](#set-transfer-options)
 1. [update dates](#update-dates)
 
@@ -88,45 +87,21 @@ For information, this script will:
 - update the metadata date stamp and increment the edition of the previous & current ADD records collections
 - save updated collections back to the records store
 
-### Classic scripts
 
-**Note:** These scripts have not yet been updated.
 
-#### Registering download proxy items
-
-This script generates and registers the download URLs that will be included in metadata records for the release.
-
-**Note:** This script assumes the information needed to create the download URLs is included in the tables within the 
-ADD release issue in GitLab (specifically tables 1 and 2).
 
 Before running this script you will need to:
 
-1. copy and paste the contents of table 1 and 2 from the relevant ADD release issue updating the variables in the script
-2. check the correct `lambda_endpoint` variable (staging or production) is uncommented (and the other is commented)
 
 To run this script:
 
 ```
-$ poetry run python src/add_scripts/register_lookups
 ```
 
-For information, the steps this script performs are:
 
-1. converting the markdown tables (table 1 & 2) in the release issue to Python objects
-2. joining the objects from the two tables together (using the dataset title as a joining field)
-3. converting the file type name (e.g. 'Geopackage') into a media type (e.g. 'application/geopackage+vnd.sqlite3')
-4. re-formatting this combined and converted information into 
-   [Download Proxy Lookup Items](https://gitlab.data.bas.ac.uk/MAGIC/add-metadata-toolbox/-/blob/main/README.md#downloads-proxy-artefacts-lookup-schema)
-5. generating random artefact IDs for each lookup item
-6. [registering](https://gitlab.data.bas.ac.uk/MAGIC/add-metadata-toolbox/-/blob/main/README.md#registering-downloads-proxy-artefacts-lookup-items) 
-   these download items in the Downloads Proxy
-7. saving the registered lookup items in a local file: `lookup_items.json`
 
-**Note:** The artefact IDs generated for each lookup item are random, and change each time this script is run.
 ### Set transfer options
 
-These URLs are registered in the 
-[ADD Data Catalogue Downloads Proxy](https://gitlab.data.bas.ac.uk/MAGIC/add-metadata-toolbox/-/blob/main/README.md#user-content-downloads-proxy).
 This script sets distribution options (downloads) in each record in the upcoming release.
 
 Before running this script you will need to:
