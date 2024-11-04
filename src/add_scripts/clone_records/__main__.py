@@ -1,13 +1,9 @@
 import json
 from copy import deepcopy
-from pathlib import Path
 
-from add_scripts.data import AddDatasetCode
+from add_scripts.data import AddDatasetCode, ADD_CURRENT_COLLECTION, OUTPUT_BASE, load_record_from_store
 
 
-ADD_CURRENT_COLLECTION = "e74543c0-4c4e-4b41-aa33-5bb2f67df389"
-RECORDS_BASE = Path("records")
-OUTPUT_BASE = Path("next_release")
 UPDATE_PLACEHOLDER = "!!PLACEHOLDER!!"
 
 # comment out items that are not part of the next release
@@ -35,12 +31,6 @@ DATASETS_TO_CLONE = [
 NEXT_RELEASE = "7.10"
 
 
-def get_record_data(file_identifier: str) -> dict:
-    record_path = RECORDS_BASE / "records" / f"{file_identifier}.json"
-    with record_path.open() as f:
-        return json.load(f)
-
-
 def get_collection_record_ids(record: dict) -> list[str]:
     related_ids = []
 
@@ -61,12 +51,12 @@ def get_collection_record_ids(record: dict) -> list[str]:
 def index_add_records() -> dict[str, dict]:
     current_records = {}
 
-    add_collection = get_record_data(ADD_CURRENT_COLLECTION)
+    add_collection = load_record_from_store(ADD_CURRENT_COLLECTION)
     current_record_ids = get_collection_record_ids(add_collection)
     records_by_title = {}
 
     for record_id in current_record_ids:
-        record_data = get_record_data(record_id)
+        record_data = load_record_from_store(record_id)
         record_title = record_data["identification"]["title"]["value"]
         records_by_title[record_title] = record_id
         record_code = AddDatasetCode(record_title)

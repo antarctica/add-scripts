@@ -32,6 +32,7 @@ Scripts should be run in this order:
 
 1. [clone previous records](#clone-previous-records)
 1. [set resource identifiers](#set-resource-ids)
+1. [update collections](#update-collections)
 1. [register download proxy items](#registering-download-proxy-items)
 1. [updating metadata records with download proxy URLs](#updating-metadata-records-with-download-proxy-urls)
 1. [checking transfer options are unique](#checking-all-records-have-unique-transfer-option-urls)
@@ -64,6 +65,29 @@ For information, this script will:
 - sets the `revisionOf` related record to the source record
 - save cloned records as files
 - save a MarkDown formatted table to act as a reference within the relevant release issue
+
+### Update collections
+
+This script updates the ADD core and previous versions collections based on records that will form part of the upcoming
+release.
+
+Before running this script you will need to:
+
+- have run the [Set Resource IDs](#set-resource-ids) script
+
+To run this script:
+
+```
+$ poetry run python src/add_scripts/update_collections
+```
+
+For information, this script will:
+
+- load cloned records and index them by ADD Dataset Code
+- update the previous ADD (core) records collection items, to prepend the identifiers for any records that have been cloned
+- update the current ADD (core) collection items, to replace the identifiers for any records that have been cloned
+- update the metadata date stamp and increment the edition of the previous & current ADD records collections
+- save updated collections back to the records store
 
 ### Classic scripts
 
