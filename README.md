@@ -36,7 +36,7 @@ Scripts should be run in this order:
 1. [register download proxy items](#registering-download-proxy-items)
 1. [updating metadata records with download proxy URLs](#updating-metadata-records-with-download-proxy-urls)
 1. [checking transfer options are unique](#checking-all-records-have-unique-transfer-option-urls)
-1. [setting publication and release dates](#updating-release-and-publication-dates-in-metadata-records)
+1. [update dates](#update-dates)
 
 ### Clone previous records
 
@@ -154,13 +154,8 @@ For information, for each record in the release this script will:
 5. if found, update the URL in the distribution option with the correct download URL (using on the artefact ID)
 6. save the metadata record back to OneDrive
 
-#### Updating release and publication dates in metadata records
 
-This script updates the released and publication dates in each metadata record for a release. It also updates the 
-date the metadata record was last updated.
 
-All three dates will be set to the current time (i.e. you cannot set a date in the past or future with this script). 
-The date timezone used is always UTC (so in the summer will appear as 1 hour behind).
 
 Before running this script you will need to:
 
@@ -169,20 +164,17 @@ Before running this script you will need to:
 To run this script:
 
 ```
-$ poetry run python src/add_scripts/set_dates
 ```
 
-For information, for each record in the release this script will:
 
-1. load the metadata record from OneDrive
-2. set the *publication* date to the current date and time
-3. set the *released* date to the current date and time
-4. set the metadata updated date to the current date (times are not recorded as per the ISO specification)
-5. save the metadata record back to OneDrive
+### Update dates
 
 #### Checking all records have unique transfer option URLs
+This script updates the released and publication dates in each record in the upcoming release. It also updates the 
+metadata datestamp.
 
 This script checks that all records in a release have unique download URLs, to detect errors in other tasks.
+All three dates will be set to the current time. UTC is always used (so in the summer will appear as 1 hour behind).
 
 Before running this script you will need to:
 
@@ -190,14 +182,17 @@ Before running this script you will need to:
 
 This script is only a check, if it finds problems they will be listed (but not fixed). If no problems are found, no 
 output will be shown.
+- have run the [Clone Previous Records](#clone-previous-records) script
 
 To run this script:
 
 ```
 $ poetry run python src/add_scripts/check_transfer_option_urls_unique
+$ poetry run python src/add_scripts/set_dates
 ```
 
 For information, for each record in the release this script will:
+For information, this script will:
 
 1. load all the metadata records from OneDrive
 2. for each record, and each transfer option check the transfer option URL against every other record's transfer 
@@ -205,6 +200,11 @@ For information, for each record in the release this script will:
 3. discount situations where the source record ID and the comparison record ID are the same (as these will always be 
    the same)
 4. log to the screen any URLs that do match, reporting the source and comparison record ID and media-type
+- load new records and index them by ADD Dataset Code
+- set or update the *publication* date to the current date and time for each record
+- set or update the *released* date to the current date and time for each record
+- set the metadata datestamp for each record
+- save each updated record
 
 ## Implementation
 
