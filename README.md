@@ -34,7 +34,6 @@ Scripts should be run in this order:
 1. [set resource identifiers](#set-resource-ids)
 1. [update collections](#update-collections)
 1. [register download proxy items](#registering-download-proxy-items)
-1. [checking transfer options are unique](#checking-all-records-have-unique-transfer-option-urls)
 2. [set transfer options](#set-transfer-options)
 1. [update dates](#update-dates)
 
@@ -167,52 +166,54 @@ For information, this script will:
 - append distribution options to each record
 - save new records
 
+### Check transfer options
 
+This script checks transfer options in each record in the upcoming release have unique URLs, to detect errors from 
+other tasks. This script will also check for any download proxy URLs without an artefact specified.
 
+This script is only a check, if it finds problems they will be listed (but not fixed).
 
 Before running this script you will need to:
 
 1. **IMPORTANT!** check the `metadata_records_path` variable points to the right release
-
-To run this script:
-
-```
-```
-
-
-### Update dates
-
-#### Checking all records have unique transfer option URLs
-This script updates the released and publication dates in each record in the upcoming release. It also updates the 
-metadata datestamp.
-
-This script checks that all records in a release have unique download URLs, to detect errors in other tasks.
-All three dates will be set to the current time. UTC is always used (so in the summer will appear as 1 hour behind).
-
-Before running this script you will need to:
-
-1. check the `metadata_records_path` variable points to the right release
-
-This script is only a check, if it finds problems they will be listed (but not fixed). If no problems are found, no 
-output will be shown.
 - have run the [Clone Previous Records](#clone-previous-records) script
 
 To run this script:
 
 ```
-$ poetry run python src/add_scripts/check_transfer_option_urls_unique
+$ poetry run python src/add_scripts/check_transfer_options
+```
+
+For information, this script will:
+
+- load new records and index them by ADD Dataset Code
+- extract transfer option URLs and format media types for each record
+- create a list of (record_id, transfer_url, transfer_media_type) tuples for all transfer options in all new records
+- for each transfer_url find the number of times it appears in any tuple
+- if more than once, store the indexes of each matching tuple (e.g. 1st and 7th list index)
+- for each set of matching tuples, add to a dict indexed by transfer_option
+- check whether each transfer_url points to the Download Proxy, and if so, has an artefact specified
+- report on any duplicate or incomplete URLs found
+
+### Update dates
+
+This script updates the released and publication dates in each record in the upcoming release. It also updates the 
+metadata datestamp.
+
+All three dates will be set to the current time. UTC is always used (so in the summer will appear as 1 hour behind).
+
+Before running this script you will need to:
+
+- have run the [Clone Previous Records](#clone-previous-records) script
+
+To run this script:
+
+```
 $ poetry run python src/add_scripts/set_dates
 ```
 
-For information, for each record in the release this script will:
 For information, this script will:
 
-1. load all the metadata records from OneDrive
-2. for each record, and each transfer option check the transfer option URL against every other record's transfer 
-   option URLs
-3. discount situations where the source record ID and the comparison record ID are the same (as these will always be 
-   the same)
-4. log to the screen any URLs that do match, reporting the source and comparison record ID and media-type
 - load new records and index them by ADD Dataset Code
 - set or update the *publication* date to the current date and time for each record
 - set or update the *released* date to the current date and time for each record
