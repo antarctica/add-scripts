@@ -1,20 +1,6 @@
 from datetime import datetime
 
-from add_scripts.data import load_new_records, save_new_records, load_table, OUTPUT_BASE
-
-
-def load_table3() -> list[dict]:
-    table = load_table(table_path=OUTPUT_BASE / "table3.md")
-
-    rows_ = []
-    for row in table:
-        row_ = {
-            "record_id": row["Resource ID"],
-            "doi_identifier": row["DOI (Value)"],
-            "citation": row["Citation"],
-        }
-        rows_.append(row_)
-    return rows_
+from add_scripts.data import load_new_records, save_new_records, load_table3
 
 
 def process_citations(rows: list[dict]) -> dict[str, tuple[dict, str]]:

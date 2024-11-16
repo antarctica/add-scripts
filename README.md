@@ -40,6 +40,7 @@ Scripts should be run in this order (some scripts require other scripts to be ru
 1. [check transfer options](#check-transfer-options)
 1. [set citation](#set-citation)
 1. [update dates](#update-dates)
+1. [check downloads](#check-downloads)
 
 Additional scripts
 
@@ -162,8 +163,8 @@ multiple times.
 [Zipped Shapefile](https://metadata-resources.data.bas.ac.uk/media-types/application/vnd.shp+zip) as distribution 
 formats.
 
-**Note:** It is assumed all transfer options recorded in *table 2* are files deposited with PDC, and so hard-codes the
-PDC contact as the distributor role.
+**Note:** It is assumed all transfer options recorded in *table 2* are files deposited with the PDC, and so hard-codes 
+the PDC contact as the distributor role.
 
 To run this script:
 
@@ -254,6 +255,42 @@ For information, this script will:
 - set or update the *released* date to the current date and time for each record
 - set the metadata datestamp for each record
 - save each updated record
+
+### Check downloads
+
+This script verifies DOIs resolve to a Data Catalogue item page and that any file downloads its related record contains
+match the artefacts for the upcoming release.
+
+**Note:** Only all transfer options relating to files deposited with the PDC are verified by this script.
+
+Downloads are verified by calculating SHA1 checksums of reference files and downloaded files from catalogue records.
+
+This script does not verify specific downloads for each download (yet).
+
+Before running this script you will need to:
+
+- have run the [Set Resource IDs](#set-resource-ids) script
+- copy a completed *table 3* from a release issue into `next_release/table3.md`
+- copy artefacts from the ADD working directory into `next_release/aretfacts/`
+
+To run this script:
+
+```
+$ poetry run python src/add_scripts/check_downloads
+```
+
+For information, this script will:
+
+- generate a list 
+- parse *table 3* as a MarkDown formatted string (representing a table), indexed by resource/record identifier
+- derive a list of DOIs from the table
+- make a HTTP request for each DOI, extracting the Data Catalogue item ID (file identifier) from the location header
+- make a HTTP request for each ISO 19115 XML record and parse the response as XML
+- select all distribution option transfer URLs within each XML document, giving a list of URLs
+- filter URLs to select only those relating to GeoPackage/Shapefile downloads served from the PDC Ramadda instance
+- download all URLs to a directory, skipping files that have been previously downloaded
+- calculate the SHA1 hash of each file in the reference files directory and downloaded files directory
+- compare the reference and downloaded hashes as sets to detect any differences, returning a message if there are
 
 ### Convert records to local store
 
