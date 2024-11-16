@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from add_scripts.data import load_new_records, save_new_records, load_table, OUTPUT_BASE
 
 
@@ -33,8 +35,13 @@ def process_citations(rows: list[dict]) -> dict[str, tuple[dict, str]]:
     return elements
 
 
+def make_citation_text(citation: str) -> str:
+    current_year = datetime.now().year
+    return f"{citation}\n\nIf using for a graphic or if short on space, please cite as 'Data from the SCAR Antarctic Digital Database, {current_year}'."
+
+
 def set_citation(record: dict, elements: tuple[dict, str]) -> dict:
-    record["identification"]["other_citation_details"] = elements[1]
+    record["identification"]["other_citation_details"] = make_citation_text(elements[1])
 
     add_identifier = True
     for identifier in record["identification"]["identifiers"]:
