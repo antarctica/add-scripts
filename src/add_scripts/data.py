@@ -29,6 +29,45 @@ class AddDatasetCode(Enum):
     C17 = "Antarctic Digital Database data limit at 60\u00b0S"
 
 
+def format_file_name(code):
+    if code == AddDatasetCode.C01:
+        return "C01_coast_line_h.json"
+    if code == AddDatasetCode.C02:
+        return "C02_coast_line_m.json"
+    if code == AddDatasetCode.C03:
+        return "C03_coast_poly_h.json"
+    if code == AddDatasetCode.C04:
+        return "C04_coast_poly_m.json"
+    if code == AddDatasetCode.C05:
+        return "C05_contours_h.json"
+    if code == AddDatasetCode.C06:
+        return "C06_contours_m.json"
+    if code == AddDatasetCode.C07:
+        return "C07_rock_auto.json"
+    if code == AddDatasetCode.C08:
+        return "C08_rock_poly_h.json"
+    if code == AddDatasetCode.C09:
+        return "C09_rock_poly_m.json"
+    if code == AddDatasetCode.C10:
+        return "C10_moraine_h.json"
+    if code == AddDatasetCode.C11:
+        return "C11_moraine_m.json"
+    if code == AddDatasetCode.C12:
+        return "C12_lakes_h.json"
+    if code == AddDatasetCode.C13:
+        return "C13_lakes_m.json"
+    if code == AddDatasetCode.C14:
+        return "C14_streams.json"
+    if code == AddDatasetCode.C15:
+        return "C15_seamask_poly_h.json"
+    if code == AddDatasetCode.C16:
+        return "C16_seamask_poly_m.json"
+    if code == AddDatasetCode.C17:
+        return "C17_data_limit.json"
+
+    raise ValueError(f"Unknown dataset code: {code}")
+
+
 def load_record_from_store(file_identifier: str) -> dict:
     record_path = RECORDS_BASE / "records" / f"{file_identifier}.json"
     with record_path.open() as f:
@@ -73,6 +112,10 @@ def update_record_date_stamp(record: dict) -> dict:
     now = datetime.now(tz=timezone.utc).replace(microsecond=0)
     record["metadata"]["date_stamp"] = now.strftime("%Y-%m-%d")
     return record
+def cleanup_original_records(file_names: dict[AddDatasetCode, str]) -> None:
+    for record_code, file_name in file_names.items():
+        record_path = OUTPUT_BASE / "records" / f"{file_name}.json"
+        record_path.unlink()
 
 
 def parse_markdown_table(table: str) -> list[dict]:

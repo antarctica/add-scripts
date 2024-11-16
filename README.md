@@ -44,6 +44,11 @@ Scripts should be run in this order (some scripts require other scripts to be ru
 1. [set citation](#set-citation)
 1. [update dates](#update-dates)
 
+Additional scripts
+
+* [convert records to local store](#convert-records-to-local-store)
+* [convert records from local store](#convert-records-from-local-store)
+
 ### Clone previous records
 
 This script copies previous/current records for datasets that will be updated in an upcoming release into a folder.
@@ -251,6 +256,56 @@ For information, this script will:
 - set or update the *released* date to the current date and time for each record
 - set the metadata datestamp for each record
 - save each updated record
+
+### Convert records to local store
+
+This script copies each record in the upcoming release into a folder named after it's resource ID.
+The script does not modify the contents of a record, only the file of a file containing it.
+
+This is intended for including records within the [Records Store](#records-store).
+
+**Note:** This is an experimental script and may be removed or revised.
+
+Before running this script you will need to:
+
+- have run the [Set Resource IDs](#set-resource-ids) script
+
+To run this script:
+
+```
+$ poetry run python src/add_scripts/x_convert_to_store
+```
+
+For information, this script will:
+
+- load new records and index them by ADD Dataset Code
+- save each record into a folder based on their resource ID (`file_identifier`) only
+
+### Convert records from local store
+
+This script copies files taken from the [Records Store](#records-store) into a folder for the next/upcoming release.
+The script does not modify the contents of a record, only the file of a file containing it.
+
+This is the opposite of the [convert records to local store](#convert-records-to-local-store) script.
+
+**WARNING!** This will overwrite any files in `next_release/records` where their titles match.
+
+**Note:** This is an experimental script and may be removed or revised.
+
+Before running this script you will need to:
+
+- copy one or more records from the [Records Store](#records-store) into `next_release/records_store/`
+
+To run this script:
+
+```
+$ poetry run python src/add_scripts/x_convert_from_store
+```
+
+For information, this script will:
+
+- load records from a folder
+- save each record into the folder for the next release, named to include the relevant ADD code and title summary
 
 ## Implementation
 
