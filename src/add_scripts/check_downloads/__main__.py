@@ -1,3 +1,4 @@
+from enum import Enum
 from hashlib import sha1 as sha1_alg
 from io import BytesIO
 from pathlib import Path
@@ -9,21 +10,24 @@ from tqdm import tqdm
 from add_scripts.data import OUTPUT_BASE, load_table3
 
 
-def hash_file(path: Path) -> str:
-    file = path.open(mode="rb")
-    try:
-        sha1 = sha1_alg()
-        sha1.update(file.read())
-        return sha1.hexdigest()
-    finally:
-        file.close()
-
-
-def hash_dir(path: Path) -> dict[Path, str]:
-    hashes = {}
-    for file_path in path.glob("*.*"):
-        hashes[file_path] = hash_file(file_path)
-    return hashes
+class AddDatasetCodeFiles(Enum):
+    C01 = "add_coastline_high_res_line"
+    C02 = "add_coastline_medium_res_line"
+    C03 = "add_coastline_high_res_polygon"
+    C04 = "add_coastline_medium_res_polygon"
+    C05 = "-"
+    C06 = "-"
+    C07 = "-"
+    C08 = "add_rock_outcrop_high_res_polygon"
+    C09 = "add_rock_outcrop_medium_res_polygon"
+    C10 = "add_moraine_high_res_polygon"
+    C11 = "add_moraine_medium_res_polygon"
+    C12 = "add_lakes_high_res_polygon"
+    C13 = "add_lakes_medium_res_polygon"
+    C14 = "Antarctic streams dataset"
+    C15 = "add_seamask_high_res"
+    C16 = "add_seamask_medium_res"
+    C17 = "-"
 
 
 def get_dois() -> list[str]:
@@ -95,6 +99,23 @@ def download_artefacts(base_path: Path, urls: list[str]) -> None:
             raise RuntimeError("Could not download file")
 
 
+def hash_file(path: Path) -> str:
+    file = path.open(mode="rb")
+    try:
+        sha1 = sha1_alg()
+        sha1.update(file.read())
+        return sha1.hexdigest()
+    finally:
+        file.close()
+
+
+def hash_dir(path: Path) -> dict[Path, str]:
+    hashes = {}
+    for file_path in path.glob("*.*"):
+        hashes[file_path] = hash_file(file_path)
+    return hashes
+
+
 def compare_hashes(reference: dict[Path, str], downloads: dict) -> None:
     ref_hash: list[tuple[str, str]] = [
         (path.name, hash_) for path, hash_ in reference.items()
@@ -106,7 +127,28 @@ def compare_hashes(reference: dict[Path, str], downloads: dict) -> None:
     if set(ref_hash) == set(dwn_hash):
         return
 
-    print("hash mismatch!")
+    raise ValueError("Hash mismatch!")
+
+
+def make_table(hashes: dict[Path, str]) -> None:
+    table_path = OUTPUT_BASE / "table4.md"
+    table_path.parent.mkdir(parents=True, exist_ok=True)
+
+    rows = []
+    for path, sha1_hash in hashes.items():
+        dataset_name = path.stem.split("_v")[0]
+        dataset_code = AddDatasetCodeFiles(dataset_name).name
+        rows.append((dataset_code, path.name, sha1_hash))
+    rows_sorted = sorted(rows, key=lambda x: x[0])  # sort by dataset code
+    rows_sorted = sorted(rows_sorted, key=lambda x: x[1])  # sort by file name
+
+    with table_path.open(mode="w") as f:
+        f.write("| # | File | SHA1 |\n")
+        f.write("| - | ---- | ---- |\n")
+        for row in rows_sorted:
+            f.write(f"| {row[0]} | {row[1]} | `{row[2]}` |\n")
+
+    print(f"Table written to '{table_path.resolve()}'")
 
 
 def main():
@@ -121,6 +163,7 @@ def main():
     sha1_artefacts = hash_dir(OUTPUT_BASE / "artefacts")
     sha1_downloads = hash_dir(download_base)
     compare_hashes(sha1_artefacts, sha1_downloads)
+    make_table(sha1_downloads)
 
     print("Script completed normally.")
 
