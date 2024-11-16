@@ -137,6 +137,20 @@ def load_table(table_path: Path) -> list[dict]:
     return parse_markdown_table(table)
 
 
+def load_table3() -> list[dict]:
+    table = load_table(table_path=OUTPUT_BASE / "table3.md")
+
+    rows_ = []
+    for row in table:
+        row_ = {
+            "record_id": row["Resource ID"],
+            "doi_identifier": row["DOI (Value)"],
+            "citation": row["Citation"],
+        }
+        rows_.append(row_)
+    return rows_
+
+
 def get_collection_record_ids(record: dict) -> list[str]:
     related_ids = []
 
