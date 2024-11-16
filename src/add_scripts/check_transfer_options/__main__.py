@@ -54,7 +54,7 @@ def report_duplicate_urls(
     if len(duplicate_items) == 0:
         print("No duplicate transfer options found.")
         return
-    print(f"Duplicate transfer options for:")
+    print("Duplicate transfer options for:")
     for url, items in duplicate_items.items():
         print(f"- '{url}':")
         for item in items:
