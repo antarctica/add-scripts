@@ -5,7 +5,7 @@ from pathlib import Path
 
 ADD_CURRENT_COLLECTION = "e74543c0-4c4e-4b41-aa33-5bb2f67df389"
 ADD_PREVIOUS_COLLECTION = "8ff8240d-dcfa-4906-ad3b-507929842012"
-RECORDS_BASE = Path("records")
+RECORDS_BASE = Path("records")  # records store
 OUTPUT_BASE = Path("next_release")
 
 

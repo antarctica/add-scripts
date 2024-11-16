@@ -2,7 +2,13 @@
 
 Scripts to assist with SCAR Antarctic Digital Database (ADD) releases.
 
-## Purpose
+## Overview
+
+**Note:** This project is focused on needs within the British Antarctic Survey. It has been open-sourced in case it is
+of interest to others. Some resources, indicated with a '🛡' or '🔒' symbol, can only be accessed by BAS staff or
+project members respectively. Contact the [Project Maintainer](#project-maintainer) to request access.
+
+### Purpose
 
 To help speed up and simplify ADD releases by automating boring tasks.
 
@@ -10,7 +16,7 @@ Part of a wider aim to streamline and automate the ADD release workflow
 ([#172](https://gitlab.data.bas.ac.uk/MAGIC/add/-/issues/172)) and more generally as a demonstration of the 
 [PDC-MAGIC Data Workflows](https://gist.github.com/felnne/57b64396426bfe2ca641a91d7cf9e597) project.
 
-## Status
+### Status
 
 **Note:** These scripts are in a raw/scrappy form, without tests, a CLI or proper structure. If and as these tasks 
 settle, efforts to formalise these tasks into a proper tool may be possible.
@@ -22,16 +28,7 @@ Features, bugs, etc. for these scripts are managed in the main [ADD project](htt
 **Note:** These scripts currently contain hard-coded file paths, specific to @felnne's laptop. In time this may become 
 configurable but until then, you will need to review and adjust each script before running.
 
-To use these scripts you will need a records store which must:
-
-- be available as `./records` relative to the root of this project (symlink's are ok)
-- contain a `./records` subdirectory containing a flat list of record configs as JSON files 
-  (e.g. `/records/records/abc123.json`)
-
-**Note:** `records bulk-export` from the data catalogue can be used to dump out record configs.
-
-**Note:** It is strongly recommended that this store be under version control, so you can easily see, and if needed 
-revert, changes to records made by these scripts.
+**Note:** To use these scripts you will need a [Records Store](#records-store).
 
 Scripts should be run in this order (some scripts require other scripts to be run first):
 
@@ -51,7 +48,8 @@ Additional scripts
 
 ### Clone previous records
 
-This script copies previous/current records for datasets that will be updated in an upcoming release into a folder.
+This script copies previous/current records for datasets that will be updated in an upcoming release into a 
+[folder](#conventional-folders).
 
 Before running this script you will need to:
 
@@ -156,8 +154,8 @@ Before running this script you will need to:
 - have run the [Set Resource IDs](#set-resource-ids) script
 - copy a completed *table 2* from a release issue into `next_release/table2.md`
 
-Any existing distribution options are not be removed, including those added by this script. This means you may need to
-manually remove duplicate distribution options if running this script more than once.
+Existing distribution options will not be removed or duplicated, meaning it should be safe to run this script 
+multiple times.
 
 **Note:** This script only supports 
 [GeoPackage](https://www.iana.org/assignments/media-types/application/geopackage+sqlite3) and 
@@ -313,6 +311,46 @@ Each task is currently structured as its own module, within the [`add_scripts`](
 
 Some common functions, enums and variables are defined in [`data.py`](src/add_scripts/data.py).
 
+### Records store
+
+A store of catalogue records, typically a folder under version control. A store must:
+
+- be available as `./records` relative to the root of this project (symlink's are ok)
+- contain a `./records` subdirectory containing a flat list of record configs as JSON files 
+  (e.g. `/records/records/abc123.json`)
+
+**Note:** The `records bulk-export` command from the data catalogue can be used to dump out record configs.
+
+**Note:** It is strongly recommended that this store be under version control, so you can easily see, and if needed 
+revert, changes to records made by these scripts.
+
+## Conventional folders
+
+An output/working folder is used for storing cloned and updated records named `next_release`.
+
+**Note:** It is strongly recommended that this folder be under version control, so you can easily see, and if needed 
+revert, changes to records made by these scripts (`next_release` is ignored from this project's own Git repo).
+
+This folder is distinct from:
+
+- the ADD release working folder in the MAGIC OneDrive (though this may be used directly in future)
+- the [Records Store](#records-store) (which contains all records)
+
+Records will be:
+
+- manually copied from, and possibly to, this output folder and the OneDrive working folder, to allow others to update 
+  them
+- automatically copied to, and manually from, this output folder into the [Records Store](#records-store), to store them
+  alongside other records
+
+The `next_release` folder contains:
+
+- `records/`: records named using ADD codes for easy identification
+- `records_store/`: records named using file identifiers only for compatibility with [Records Stores](#records-store)
+- `table*.md`: various tables used as part of the ADD release issue/workflow
+
+See `OUTPUT_BASE` in [`data.py`](src/add_scripts/data.py) the definition of this path in code.
+
 ## Setup
 
 You will need Python and Poetry installed locally to set this project for use locally.
@@ -332,6 +370,13 @@ All source code should be run through the Ruff code formatter:
 ```
 $ poetry run ruff --format src/
 ```
+
+## Project maintainer
+
+British Antarctic Survey ([BAS](https://www.bas.ac.uk)) Mapping and Geographic Information Centre
+([MAGIC](https://www.bas.ac.uk/teams/magic)). Contact [magic@bas.ac.uk](mailto:magic@bas.ac.uk).
+
+The project lead is [@felnne](https://www.bas.ac.uk/profile/felnne).
 
 ## Licence
 
