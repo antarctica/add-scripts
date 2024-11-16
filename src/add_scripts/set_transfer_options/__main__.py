@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from add_scripts.data import load_new_records, save_new_records, load_table, OUTPUT_BASE
 
 TRANSFER_OPTIONS = {
@@ -116,8 +118,8 @@ def main() -> None:
     artefacts = process_artefacts(rows=load_table2())
     for record_code, record in records.items():
         record_id = record["file_identifier"]
-        records[record_code] = process_distribution_options(
-            record, artefacts[record_id]
+        records[record_code] = deepcopy(
+            process_distribution_options(record, artefacts[record_id])
         )
     save_new_records(file_names, records)
     print("Script exited normally.")

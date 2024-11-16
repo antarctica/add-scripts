@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * Experimental scripts for loading and saving new records from and to a records store (essentially renaming their files) 
 
+### Fixed
+
+* set transfer opts script setting all options with values from the last record
+
 ## [0.2.0] - 2024-11-04
 
 ### Removed [BREAKING!]
