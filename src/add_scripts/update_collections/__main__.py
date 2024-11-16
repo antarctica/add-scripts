@@ -5,6 +5,7 @@ from add_scripts.data import (
     load_new_records,
     save_record_to_store,
     update_record_date_stamp,
+    update_date,
 )
 
 
@@ -13,6 +14,7 @@ def increment_collection_edition(collection: dict) -> dict:
         int(collection["identification"]["edition"]) + 1
     )
     collection = update_record_date_stamp(collection)
+    collection = update_date(collection, "revision")
     return collection
 
 

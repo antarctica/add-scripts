@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * set transfer opts script setting all options with values from the last record
 * set transfer opts script setting opts that already exist
 
+### Changed
+
+* date update handling
+
 ## [0.2.0] - 2024-11-04
 
 ### Removed [BREAKING!]
