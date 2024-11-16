@@ -9,6 +9,7 @@ from add_scripts.data import (
     OUTPUT_BASE,
     load_record_from_store,
     get_collection_record_ids,
+    format_file_name,
 )
 
 
@@ -116,45 +117,6 @@ def clone_records(selected_records: list[dict], next_release: str):
         cloned_records.append(clone)
 
     return cloned_records
-
-
-def format_file_name(code):
-    if code == AddDatasetCode.C01:
-        return f"C01_coast_line_h.json"
-    if code == AddDatasetCode.C02:
-        return f"C02_coast_line_m.json"
-    if code == AddDatasetCode.C03:
-        return f"C03_coast_poly_h.json"
-    if code == AddDatasetCode.C04:
-        return f"C04_coast_poly_m.json"
-    if code == AddDatasetCode.C05:
-        return f"C05_contours_h.json"
-    if code == AddDatasetCode.C06:
-        return f"C06_contours_m.json"
-    if code == AddDatasetCode.C07:
-        return f"C07_rock_auto.json"
-    if code == AddDatasetCode.C08:
-        return f"C08_rock_poly_h.json"
-    if code == AddDatasetCode.C09:
-        return f"C09_rock_poly_m.json"
-    if code == AddDatasetCode.C10:
-        return f"C10_moraine_h.json"
-    if code == AddDatasetCode.C11:
-        return f"C11_moraine_m.json"
-    if code == AddDatasetCode.C12:
-        return f"C12_lakes_h.json"
-    if code == AddDatasetCode.C13:
-        return f"C13_lakes_m.json"
-    if code == AddDatasetCode.C14:
-        return f"C14_streams.json"
-    if code == AddDatasetCode.C15:
-        return f"C15_seamask_poly_h.json"
-    if code == AddDatasetCode.C16:
-        return f"C16_seamask_poly_m.json"
-    if code == AddDatasetCode.C17:
-        return f"C17_data_limit.json"
-
-    raise ValueError(f"Unknown dataset code: {code}")
 
 
 def save_cloned_records(cloned_records: list[dict]):

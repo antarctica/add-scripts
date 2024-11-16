@@ -3,6 +3,7 @@ from add_scripts.data import (
     load_new_records,
     save_new_records,
     load_table,
+    cleanup_original_records,
     OUTPUT_BASE,
 )
 
@@ -45,12 +46,6 @@ def process_resources(
         record = records[dataset["code"]]
         records[dataset["code"]] = set_record_id(record, dataset["new_id"])
     return records
-
-
-def cleanup_original_records(file_names: dict[AddDatasetCode, str]) -> None:
-    for record_code, file_name in file_names.items():
-        record_path = OUTPUT_BASE / "records" / f"{file_name}.json"
-        record_path.unlink()
 
 
 def main() -> None:
