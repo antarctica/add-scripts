@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from add_scripts.data import load_new_records, save_new_records, load_table, OUTPUT_BASE
 
 TRANSFER_OPTIONS = {
@@ -90,7 +92,15 @@ def process_distribution_options(
 
     if "distribution" not in record:
         record["distribution"] = []
+    existing_opts = [
+        distribution["transfer_option"]["online_resource"]["href"]
+        for distribution in record["distribution"]
+    ]
+
     for artefact in artefacts:
+        if artefact[2] in existing_opts:
+            continue
+
         try:
             transfer_format = TRANSFER_OPTIONS[artefact[0]]
         except KeyError as e:
@@ -116,8 +126,8 @@ def main() -> None:
     artefacts = process_artefacts(rows=load_table2())
     for record_code, record in records.items():
         record_id = record["file_identifier"]
-        records[record_code] = process_distribution_options(
-            record, artefacts[record_id]
+        records[record_code] = deepcopy(
+            process_distribution_options(record, artefacts[record_id])
         )
     save_new_records(file_names, records)
     print("Script exited normally.")
