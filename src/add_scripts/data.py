@@ -108,10 +108,6 @@ def save_new_records(
             json.dump(record_data, f, indent=2)
 
 
-def update_record_date_stamp(record: dict) -> dict:
-    now = datetime.now(tz=timezone.utc).replace(microsecond=0)
-    record["metadata"]["date_stamp"] = now.strftime("%Y-%m-%d")
-    return record
 def cleanup_original_records(file_names: dict[AddDatasetCode, str]) -> None:
     for record_code, file_name in file_names.items():
         record_path = OUTPUT_BASE / "records" / f"{file_name}.json"
@@ -156,3 +152,15 @@ def get_collection_record_ids(record: dict) -> list[str]:
                 related_ids.append(aggregation["identifier"]["identifier"])
 
     return related_ids
+
+
+def update_record_date_stamp(record: dict) -> dict:
+    now = datetime.now(tz=timezone.utc).replace(microsecond=0)
+    record["metadata"]["date_stamp"] = now.strftime("%Y-%m-%d")
+    return record
+
+
+def update_date(record: dict, date_type: str) -> dict:
+    now = datetime.now(tz=timezone.utc).replace(microsecond=0)
+    record["identification"]["dates"][date_type] = now.isoformat()
+    return record
