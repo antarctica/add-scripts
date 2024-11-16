@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 * Experimental scripts for loading and saving new records from and to a records store (essentially renaming their files) 
+* Documentation on output folder and records store
 
 ### Fixed
 
