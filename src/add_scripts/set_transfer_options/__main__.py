@@ -121,6 +121,21 @@ def process_distribution_options(
     return record
 
 
+def _debug_options(records: dict) -> None:
+    for record_code, record in records.items():
+        print(record_code)
+        for distribution in record["distribution"]:
+            if "arcgis" in distribution["transfer_option"]["online_resource"]["href"]:
+                continue
+            href = distribution["transfer_option"]["online_resource"]["href"]
+            href = href.replace(
+                "https://ramadda.data.bas.ac.uk/repository/entry/get", ""
+            )
+            href = href.split("?")[0]
+            print(f"- {href}")
+        print()
+
+
 def main() -> None:
     file_names, records = load_new_records()
     artefacts = process_artefacts(rows=load_table2())
@@ -129,6 +144,7 @@ def main() -> None:
         records[record_code] = deepcopy(
             process_distribution_options(record, artefacts[record_id])
         )
+    # _debug_options(records)
     save_new_records(file_names, records)
     print("Script exited normally.")
 
