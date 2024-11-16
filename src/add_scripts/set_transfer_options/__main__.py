@@ -92,7 +92,15 @@ def process_distribution_options(
 
     if "distribution" not in record:
         record["distribution"] = []
+    existing_opts = [
+        distribution["transfer_option"]["online_resource"]["href"]
+        for distribution in record["distribution"]
+    ]
+
     for artefact in artefacts:
+        if artefact[2] in existing_opts:
+            continue
+
         try:
             transfer_format = TRANSFER_OPTIONS[artefact[0]]
         except KeyError as e:
