@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.3.0] - 2024-11-17
+
 ### Added
 
 * Initial fix citations script to remove duplicate version and include short citation guidance in table

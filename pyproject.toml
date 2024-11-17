@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "add-scripts"
-version = "0.2.0"
+version = "0.3.0"
 description = "Scripts for use in SCAR ADD releases"
 authors = ["Felix Fennell <felnne@bas.ac.uk>"]
 license = "MIT"
