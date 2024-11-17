@@ -38,7 +38,8 @@ Scripts should be run in this order (some scripts require other scripts to be ru
 1. [clean up services](#clean-up-services)
 1. [set transfer options](#set-transfer-options)
 1. [check transfer options](#check-transfer-options)
-1. [set citation](#set-citation)
+1. [fix citations](#fix-citation)
+1. [set citations](#set-citation)
 1. [update dates](#update-dates)
 1. [check downloads](#check-downloads)
 
@@ -74,7 +75,7 @@ For information, this script will:
 - sets the edition to the upcoming release
 - sets the `revisionOf` related record to the source record
 - save cloned records as files
-- save a MarkDown formatted table to act as a reference within the relevant release issue
+- save a MarkDown formatted *table 1* to act as a reference within the relevant release issue
 
 ### Set resource IDs
 
@@ -208,14 +209,49 @@ For information, this script will:
 - check whether each transfer_url points to the Download Proxy, and if so, has an artefact specified
 - report on any duplicate or incomplete URLs found
 
+### Fix citation
+
+This script fixes and updates citations to remove duplicate information (version) and add additional guidance. Updated
+citations are saved back into table 3 for use by the [Set Citation](#set-citation) script.
+
+For example a citation:
+
+> Gerrish, L. (2024). High resolution vector polygon seamask for areas south of 60S - VERSION 7.10 (Version 7.10) [Data set]. NERC EDS UK Polar Data Centre. https://doi.org/10.5285/9288fd09-681b-4377-84b2-6ab9b9c6c05d
+
+Is updated to:
+
+> Gerrish, L. (2024). High resolution vector polygon seamask for areas south of 60S (Version 7.10) [Data set]. NERC EDS UK Polar Data Centre. https://doi.org/10.5285/9288fd09-681b-4377-84b2-6ab9b9c6c05d
+>
+> If using for a graphic or if short on space, please cite as 'Data from the SCAR Antarctic Digital Database, 2024.'
+
+**Note:** line breaks are shown in the above example for legibility, real output uses `\n\n` as a single line.)
+
+Before running this script you will need to:
+
+- have run the [Set Resource IDs](#set-resource-ids) script
+- copy a completed *table 3* from a release issue into `next_release/table3.md`
+
+```
+$ poetry run python src/add_scripts/fix_citation
+```
+
+For information, this script will:
+
+- load new records and index them by ADD Dataset Code
+- parse *table 3* as a MarkDown formatted string (representing a table), as a list of rows
+- for each row, get the edition value from the record it relates to (based on resource ID)
+- for each row, update the citation field to remove duplicate edition/version clause
+- for each row, update the citation field to include additional guidance text
+- save an updated MarkDown formatted *table 3* to act as a reference within the relevant release issue
+
 ### Set citation
 
 This script sets the citation and ads an identifier for a DOI in each record in the upcoming release.
 
 Before running this script you will need to:
 
-- have run the [Set Resource IDs](#set-resource-ids) script
-- copy a completed *table 3* from a release issue into `next_release/table3.md`
+- have run the [Fix Citations](#fix-citation) script
+- have a corrected *table 3* in `next_release/table3.md`
 
 To run this script:
 
@@ -291,6 +327,7 @@ For information, this script will:
 - download all URLs to a directory, skipping files that have been previously downloaded
 - calculate the SHA1 hash of each file in the reference files directory and downloaded files directory
 - compare the reference and downloaded hashes as sets to detect any differences, returning a message if there are
+- save a MarkDown formatted *table 4* to act as a reference within the relevant release issue
 
 ### Convert records to local store
 
