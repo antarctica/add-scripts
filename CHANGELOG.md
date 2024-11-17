@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+* Initial fix citations script to remove duplicate version and include short citation guidance in table
 * Initial check record downloads script, match hashes again reference files and indirectly verifying DOI resolution
 * Experimental scripts for loading and saving new records from and to a records store (essentially renaming their files) 
 * Documentation on output folder and records store
@@ -21,7 +22,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 * date update handling
-* including additional text in citations
 
 ## [0.2.0] - 2024-11-04
 
